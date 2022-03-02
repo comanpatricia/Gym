@@ -2,6 +2,7 @@
 Gym app for internship
 
 
+
 Now let’s have some fun!
 
 Our goal throughout the internship will be to learn to properly develop software. We are targeting web development and the focus is on PHP and Symfony but please note that we are also building a mindset and we are using principles and guidelines that are widely used in any development context and language.
