@@ -10,7 +10,7 @@ In order to achieve this goal, we’ll simulate that we work on a real project a
 
 The client (the gym representatives) will be the trainers and they will be responsible for stating the requests and the features that the app needs and you will be the developers. Behind each feature is a lesson and something new to learn (regarding PHP, Symfony, databases, architecture, testing, external communication, performance, or any other development-related guideline). Therefore, we advise you to focus on what you learn throughout the process and not on the actual gym application and its features. While it is true that we’ll make everything as close to a real project as possible, in the end, it is still a playground and some features that you might expect from a fully working application might be missing.
 
-- [X] The main functionalities that the application will have (business-related) are the following:
+The main functionalities that the application will have (business-related) are the following:
 - [X] Management of sports programs
 - [X] Import programs from a warehouse and make them available in the app
 - [X] Display programs to the users (filter, paginate, sort, etc.)
