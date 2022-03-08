@@ -8,16 +8,27 @@ class Room
 
     public string $name;
 
-    public string $description;
+    public int $capacity;
 
-    public \DateTime $startTime;
+    private Building $building;
 
-    public \DateTime $endTime;
 
     public function getId(): int
     {
 
         return $this->id;
+    }
+
+    public function getBuilding(): Building
+    {
+        return $this->building;
+    }
+
+    public function setBuilding(Building $building): self
+    {
+        $this->building = $building;
+
+        return this;
     }
 }
 

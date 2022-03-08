@@ -20,9 +20,9 @@ class Programme
 
     private Room $room;
 
-    private ?Collection $customers;
+    private Collection $customers;
 
-    public bool $isOnline;
+    public bool $isOnline = false;
 
 
     public function getId(): int
