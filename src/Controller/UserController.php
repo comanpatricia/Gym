@@ -2,44 +2,78 @@
 
 namespace App\Controller;
 
+use App\Controller\Dto\UserDto;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route(path="/api/user")
  */
 class UserController
 {
+    private ValidatorInterface $validator;
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface  $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
+        $this->validator = $validator;
     }
+
+//    /**
+//     * @Route(methods={"POST"})
+//     */
+//    public function register(Request $request): Response
+//    {
+//        $data = $request->getContent();
+//        $decodedData = json_decode($data,true);
+//
+//        $newUser = new User();
+//        $newUser->cnp = $decodedData['cnp'];
+//        $newUser->firstName = $decodedData['firstName'];
+//        $newUser->lastName = $decodedData['lastName'];
+//        $newUser->email = $decodedData['email'];
+//        $newUser->password = $decodedData['password'];
+//        $newUser->setRoles(['customer']);
+//
+//        $this->entityManager->persist($newUser);
+//        $this->entityManager->flush();
+//
+//
+//        return new JsonResponse($newUser, Response::HTTP_CREATED);
+//    }
 
     /**
      * @Route(methods={"POST"})
      */
-    public function register(Request $request): Response
+    public function register(UserDto $userDto): Response
     {
-        $data = $request->getContent();
-        $decodedData = json_decode($data,true);
+        $user = User::createFromDto($userDto);
 
-        $newUser = new User();
-        $newUser->cnp = $decodedData['cnp'];
-        $newUser->firstName = $decodedData['firstName'];
-        $newUser->lastName = $decodedData['lastName'];
-        $newUser->email = $decodedData['email'];
-        $newUser->password = $decodedData['password'];
-        $newUser->setRoles(['customer']);
+        $errors = $this->validator->validate($user);
+        if (count($errors) > 0) {
+            $errorArray = [];
+            foreach ($errors as $error) {
+                /**
+                 * @var ConstraintViolation $error
+                 */
+                $errorArray[$error->getPropertyPath()] = $error->getMessage();
+            }
+            return new JsonResponse($errorArray);
+        }
 
-        $this->entityManager->persist($newUser);
+        $this->entityManager->persist($user);
         $this->entityManager->flush();
+        $this->entityManager->refresh($user);
+        $savedDto = UserDto::createFromUser($user);
 
-        return new JsonResponse($newUser, Response::HTTP_CREATED);
+        return new JsonResponse($savedDto, Response::HTTP_CREATED);
     }
 }
+

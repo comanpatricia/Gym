@@ -6,6 +6,8 @@ use App\Controller\Dto\UserDto;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as MyAssert;
 
 /**
  * @ORM\Entity()
@@ -17,20 +19,22 @@ class User implements \JsonSerializable
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private int $id = 0;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     public string $password;
 
     /**
      * @ORM\Column(type="json")
      */
-    private array $roles;
+    private array $roles = [];
 
     /**
      * @ORM\Column(type="string", length=13)
+     * @MyAssert\Cnp
      */
     public string $cnp = '';
 
@@ -41,6 +45,7 @@ class User implements \JsonSerializable
 
     /**
      * @ORM\Column(type="string", length=255, nullable="false")
+     * @Assert\NotBlank()
      */
     public string $firstName = '';
 
@@ -54,14 +59,10 @@ class User implements \JsonSerializable
      */
     private Collection $programmes;
 
-    /**
-     * @param Collection $programmes
-     */
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
     }
-
 
     public function getId(): int
     {
@@ -104,38 +105,38 @@ class User implements \JsonSerializable
         return $this;
     }
 
-    public function removeProgramme(Programme $programme): self
-    {
-        if (!$this->programmes->contains($programme)) {
-            return $this;
-        }
-
-        $this->programmes->removeElement($programme);
-        $programme->removeCustomer($this);
-
-        return $this;
-    }
-
-    public function addRole(string $role): self
-    {
-        if ($this->roles->contains($role)) {
-            return $this;
-        }
-        $this->roles->add($role);
-
-        return $this;
-    }
-
-    public function removeRole(string $role): self
-    {
-        if (!$this->roles->contains($role)) {
-
-            return $this;
-        }
-        $this->roles->removeElement($role);
-
-        return $this;
-    }
+//    public function removeProgramme(Programme $programme): self
+//    {
+//        if (!$this->programmes->contains($programme)) {
+//            return $this;
+//        }
+//
+//        $this->programmes->removeElement($programme);
+//        $programme->removeCustomer($this);
+//
+//        return $this;
+//    }
+//
+//    public function addRole(string $role): self
+//    {
+//        if ($this->roles->contains($role)) {
+//            return $this;
+//        }
+//        $this->roles->add($role);
+//
+//        return $this;
+//    }
+//
+//    public function removeRole(string $role): self
+//    {
+//        if (!$this->roles->contains($role)) {
+//
+//            return $this;
+//        }
+//        $this->roles->removeElement($role);
+//
+//        return $this;
+//    }
 
     public function jsonSerialize(): array
     {
@@ -144,17 +145,23 @@ class User implements \JsonSerializable
             "firstName" => $this->firstName,
             "lastName" => $this->lastName,
             "email" => $this->email,
+            "cnp" => $this->cnp,
             "roles" => $this->roles,
-            "cnp" => $this->cnp
+
         ];
     }
 
-//    public static function createFromDto(UserDto $userDto): self
-//    {
-//        $user = new User();
-//        $user->cnp = $userDto->cnp;
-//
-//        return $user;
-//    }
+    public static function createFromDto(UserDto $userDto): self
+    {
+        $user = new self();
+        $user->cnp = $userDto->cnp;
+        $user->password = $userDto->password;
+//        $user->confirmPassword = $userDto->confirmPassword;
+        $user->email = $userDto->email;
+        $user->lastName = $userDto->lastName;
+        $user->firstName = $userDto->firstName;
+
+        return $user;
+    }
 }
 
