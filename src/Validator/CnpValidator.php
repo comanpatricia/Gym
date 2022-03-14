@@ -13,10 +13,27 @@ class CnpValidator extends ConstraintValidator
         if (!$constraint instanceof Cnp) {
             throw new UnexpectedTypeException($constraint, Cnp::class);
         }
-        if(strlen($value) === 13){
 
+        $constant = "279146358279";
+        $sum = 0;
+        $length = strlen($value)-1;
+        for($index = 0; $index < $length; $index++){
+            $valueInt = (int)$value[$index];
+            $constantInt = (int)$constant[$index];
+            $sum += $valueInt * $constantInt;
+        }
+        $remainder = $sum % 11;
+        $cValue = 0;
+        if($remainder == 10){
+            $cValue = 1;
+        }
+        if($remainder < 10){
+            $cValue = $remainder;
+        }
+        if($cValue === (int)$value[$length]){
             return;
         }
+
         $this->context->buildViolation($constraint->message)
              ->addViolation();
     }

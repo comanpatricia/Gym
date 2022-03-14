@@ -9,10 +9,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class Cnp extends Constraint
 {
-    public $message = "This is not a valid CNP";
-
-    public function validatedBy()
-    {
-        return parent::validatedBy(); 
-    }
+    public $message = "This is not a valid CNP.";
 }

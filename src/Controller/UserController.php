@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,8 +17,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route(path="/api/user")
  */
-class UserController
+class UserController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     private ValidatorInterface $validator;
     private EntityManagerInterface $entityManager;
 
@@ -26,43 +30,21 @@ class UserController
         $this->validator = $validator;
     }
 
-//    /**
-//     * @Route(methods={"POST"})
-//     */
-//    public function register(Request $request): Response
-//    {
-//        $data = $request->getContent();
-//        $decodedData = json_decode($data,true);
-//
-//        $newUser = new User();
-//        $newUser->cnp = $decodedData['cnp'];
-//        $newUser->firstName = $decodedData['firstName'];
-//        $newUser->lastName = $decodedData['lastName'];
-//        $newUser->email = $decodedData['email'];
-//        $newUser->password = $decodedData['password'];
-//        $newUser->setRoles(['customer']);
-//
-//        $this->entityManager->persist($newUser);
-//        $this->entityManager->flush();
-//
-//
-//        return new JsonResponse($newUser, Response::HTTP_CREATED);
-//    }
-
     /**
      * @Route(methods={"POST"})
      */
     public function register(UserDto $userDto): Response
     {
+        $this->logger->info('An user is registered');
+
         $user = User::createFromDto($userDto);
 
         $errors = $this->validator->validate($user);
         if (count($errors) > 0) {
             $errorArray = [];
             foreach ($errors as $error) {
-                /**
-                 * @var ConstraintViolation $error
-                 */
+
+                /** @var ConstraintViolation $error */
                 $errorArray[$error->getPropertyPath()] = $error->getMessage();
             }
             return new JsonResponse($errorArray);

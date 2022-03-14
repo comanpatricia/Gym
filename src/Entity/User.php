@@ -22,37 +22,45 @@ class User implements \JsonSerializable
     private int $id = 0;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
-    public string $password;
-
-    /**
-     * @ORM\Column(type="json")
-     */
-    private array $roles = [];
-
-    /**
-     * @ORM\Column(type="string", length=13)
-     * @MyAssert\Cnp
-     */
-    public string $cnp = '';
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    public string $email = '';
-
-    /**
      * @ORM\Column(type="string", length=255, nullable="false")
      * @Assert\NotBlank()
+     * @Assert\Regex("/^[A-Z][a-z]+$/")
      */
     public string $firstName = '';
 
     /**
      * @ORM\Column(type="string", length=255, nullable="false")
+     * @Assert\Regex("/^[A-Z][a-z]+$/")
+     * @Assert\NotBlank()
      */
     public string $lastName = '';
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Email
+     * @Assert\NotBlank()
+     */
+    public string $email = '';
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @MyAssert\Password
+     */
+    public string $password;
+
+    /**
+     * @ORM\Column(type="string", length=13)
+     * @MyAssert\Cnp
+     * @Assert\NotBlank()
+     * @Assert\Regex("/^([1-8])([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])(0[0-9]|[1-3]\d|4[0-8])(\d{3})([0-9])$/")
+     */
+    public string $cnp = '';
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private array $roles = [];
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Programme", mappedBy="customers")
@@ -105,18 +113,18 @@ class User implements \JsonSerializable
         return $this;
     }
 
-//    public function removeProgramme(Programme $programme): self
-//    {
-//        if (!$this->programmes->contains($programme)) {
-//            return $this;
-//        }
-//
-//        $this->programmes->removeElement($programme);
-//        $programme->removeCustomer($this);
-//
-//        return $this;
-//    }
-//
+    public function removeProgramme(Programme $programme): self
+    {
+        if (!$this->programmes->contains($programme)) {
+            return $this;
+        }
+
+        $this->programmes->removeElement($programme);
+        $programme->removeCustomer($this);
+
+        return $this;
+    }
+
 //    public function addRole(string $role): self
 //    {
 //        if ($this->roles->contains($role)) {
@@ -154,12 +162,12 @@ class User implements \JsonSerializable
     public static function createFromDto(UserDto $userDto): self
     {
         $user = new self();
+        $user->firstName = $userDto->firstName;
+        $user->lastName = $userDto->lastName;
+        $user->email = $userDto->email;
         $user->cnp = $userDto->cnp;
         $user->password = $userDto->password;
 //        $user->confirmPassword = $userDto->confirmPassword;
-        $user->email = $userDto->email;
-        $user->lastName = $userDto->lastName;
-        $user->firstName = $userDto->firstName;
 
         return $user;
     }
