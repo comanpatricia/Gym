@@ -2,28 +2,68 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity()
+ */
 class Programme
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
     private int $id;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     public string $name = '';
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     public string $description = '';
 
+    /**
+     * @ORM\Column (type="datetime")
+     */
     private \DateTime $startTime;
 
+    /**
+     * @ORM\Column (type="datetime")
+     */
     private \DateTime $endTime;
 
-    private ?User $trainer;                                 //can be null
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="trainer_id", referencedColumnName="id")
+     */
+    private ?User $trainer;
 
-    private Room $room;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Room")
+     * @ORM\JoinColumn(name="room_id", referencedColumnName="id")
+     */
+    private Room $room;                         //ne folosim de conceptul de "tabela pivot"
 
+    /**
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="programmes")
+     * @ORM\JoinTable(name="programmes_customers")
+     */
     private Collection $customers;
+
 
     public bool $isOnline = false;
 
+
+    public function __construct()
+    {
+        $this->customers = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -79,16 +119,39 @@ class Programme
         return $this;
     }
 
-    public function getCustomers(): ?Collection
+    public function getCustomers(): Collection
     {
         return $this->customers;
     }
 
-    public function setCustomers(?Collection $customers): self
+    public function setCustomers(Collection $customers): self
     {
         $this->customers = $customers;
 
         return $this;
     }
-}
 
+    public function addCustomer(User $customer): self
+    {
+        if ($this->customers->contains($customer)) {
+            return $this;
+        }
+
+        $this->customers->add($customer);
+        $customer->addProgramme($this);
+
+        return $this;
+    }
+
+    public function removeCustomer(User $customer): self
+    {
+        if (!$this->customers->contains($customer)) {
+            return $this;
+        }
+
+        $this->customers->removeElement($customer);
+        $customer->removeProgramme($this);
+
+        return $this;
+    }
+}

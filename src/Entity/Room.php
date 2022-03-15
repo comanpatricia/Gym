@@ -2,14 +2,33 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity()
+ */
 class Room
 {
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
     private int $id;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     public string $name;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
     public int $capacity;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Building", mappedBy="room")
+     */
     private Building $building;
 
 
@@ -28,7 +47,6 @@ class Room
     {
         $this->building = $building;
 
-        return this;
+        return $this;
     }
 }
-
