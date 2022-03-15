@@ -59,7 +59,7 @@ class User implements \JsonSerializable
     public ?string $plainPassword = '';
 
     /**
-     * @ORM\Column(type="string", length=13)
+     * @ORM\Column(type="string", length=13, options={"fixed" = true})
      * @MyAssert\Cnp
      * @Assert\NotBlank()
      * @Assert\Regex("/^([1-8])([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])(0[0-9]|[1-3]\d|4[0-8])(\d{3})([0-9])$/")
