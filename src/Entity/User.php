@@ -6,14 +6,20 @@ use App\Controller\Dto\UserDto;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as MyAssert;
 
 /**
  * @ORM\Entity()
  */
-class User implements \JsonSerializable
+class User implements \JsonSerializable, UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -50,6 +56,11 @@ class User implements \JsonSerializable
     public string $password;
 
     /**
+     * @Assert\Regex ("/^[0-9a-zA-Z\.\_]{8,}$/")
+     */
+    public ?string $plainPassword = '';
+
+    /**
      * @ORM\Column(type="string", length=13)
      * @MyAssert\Cnp
      * @Assert\NotBlank()
@@ -59,6 +70,7 @@ class User implements \JsonSerializable
 
     /**
      * @ORM\Column(type="json")
+     * @Assert\Choice(choices=User::ROLES, multiple=true)
      */
     private array $roles = [];
 
@@ -97,6 +109,18 @@ class User implements \JsonSerializable
     public function setProgrammes(Collection $programmes): self
     {
         $this->programmes = $programmes;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
@@ -155,7 +179,6 @@ class User implements \JsonSerializable
             "email" => $this->email,
             "cnp" => $this->cnp,
             "roles" => $this->roles,
-
         ];
     }
 
@@ -167,9 +190,7 @@ class User implements \JsonSerializable
         $user->email = $userDto->email;
         $user->cnp = $userDto->cnp;
         $user->password = $userDto->password;
-//        $user->confirmPassword = $userDto->confirmPassword;
 
         return $user;
     }
 }
-
