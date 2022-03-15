@@ -28,7 +28,7 @@ class PasswordValidatorTest extends ConstraintValidatorTestCase
     public function testInvalidCnp(string $password)
     {
         $this->validator->validate($password, new Password());
-        $this->buildViolation('The password must contain at least 8 characters including an uppercase character & a special character')
+        $this->buildViolation('The password must contain at least 8 chars including an uppercase char & a special char')
              ->assertRaised();
     }
 

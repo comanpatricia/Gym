@@ -46,8 +46,7 @@ class ArgumentResolverTest extends TestCase
 
         $argumentMetadata = new ArgumentMetadata('test', UserDto::class, true, true, true, false);
         $dto = null;
-        foreach ($this->userDtoArgumentValueResolver->resolve($request, $argumentMetadata) as $result)
-        {
+        foreach ($this->userDtoArgumentValueResolver->resolve($request, $argumentMetadata) as $result) {
             $dto = $result;
         }
 
@@ -62,4 +61,3 @@ class ArgumentResolverTest extends TestCase
         self::assertEquals($userDto, $dto);
     }
 }
-

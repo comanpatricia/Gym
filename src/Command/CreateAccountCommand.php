@@ -59,6 +59,10 @@ class CreateAccountCommand extends Command
         $this->plainPassword = $helper->ask($input, $output, $question);
     }
 
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $inputOutput = new SymfonyStyle($input, $output);
@@ -92,6 +96,7 @@ class CreateAccountCommand extends Command
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+        $this->entityManager->refresh($user);
 
         $inputOutput->success('A new user was created');
 

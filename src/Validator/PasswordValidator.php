@@ -10,7 +10,7 @@ class PasswordValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint): void
     {
-        if (!$constraint instanceof Password){
+        if (!$constraint instanceof Password) {
             throw new UnexpectedTypeException($constraint, Password::class);
         }
 
@@ -25,4 +25,3 @@ class PasswordValidator extends ConstraintValidator
              ->addViolation();
     }
 }
-

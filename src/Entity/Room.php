@@ -47,7 +47,6 @@ class Room
     {
         $this->building = $building;
 
-        return this;
+        return $this;
     }
 }
-

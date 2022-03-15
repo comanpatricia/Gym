@@ -16,21 +16,21 @@ class CnpValidator extends ConstraintValidator
 
         $constant = "279146358279";
         $sum = 0;
-        $length = strlen($value)-1;
-        for($index = 0; $index < $length; $index++){
-            $valueInt = (int)$value[$index];
-            $constantInt = (int)$constant[$index];
+        $length = strlen($value) - 1;
+        for ($index = 0; $index < $length; $index++) {
+            $valueInt = (int) $value[$index];
+            $constantInt = (int) $constant[$index];
             $sum += $valueInt * $constantInt;
         }
         $remainder = $sum % 11;
         $cValue = 0;
-        if($remainder == 10){
+        if ($remainder == 10) {
             $cValue = 1;
         }
-        if($remainder < 10){
+        if ($remainder < 10) {
             $cValue = $remainder;
         }
-        if($cValue === (int)$value[$length]){
+        if ($cValue === (int)$value[$length]) {
             return;
         }
 
@@ -38,4 +38,3 @@ class CnpValidator extends ConstraintValidator
              ->addViolation();
     }
 }
-

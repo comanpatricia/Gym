@@ -4,8 +4,6 @@ namespace App\Tests\Validator;
 
 use App\Validator\Cnp;
 use App\Validator\CnpValidator;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class CnpValidatorTest extends ConstraintValidatorTestCase

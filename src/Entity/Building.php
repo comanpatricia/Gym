@@ -32,4 +32,3 @@ class Building
         return $this->id;
     }
 }
-
