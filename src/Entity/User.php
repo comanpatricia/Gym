@@ -12,7 +12,7 @@ use App\Validator as MyAssert;
 /**
  * @ORM\Entity()
  */
-class User implements \JsonSerializable
+class User
 {
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -51,7 +51,7 @@ class User implements \JsonSerializable
      * @Assert\NotBlank()
      * @MyAssert\Password
      */
-    public string $password;
+    public string $password = '';
 
     /**
      * @Assert\Regex ("/^[0-9a-zA-Z\.\_]{8,}$/")
@@ -89,12 +89,16 @@ class User implements \JsonSerializable
 
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+
+        $roles[] = self::ROLE_USER;
+
+        return array_values(array_unique($roles));
     }
 
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
+        $this->roles = array_values(array_unique($roles));
 
         return $this;
     }

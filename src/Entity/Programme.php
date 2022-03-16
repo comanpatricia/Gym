@@ -56,7 +56,9 @@ class Programme
      */
     private Collection $customers;
 
-
+    /**
+     * @ORM\Column(type="boolean")
+     */
     public bool $isOnline = false;
 
 

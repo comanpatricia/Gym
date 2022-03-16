@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\User;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,27 +11,26 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateAccountCommand extends Command
 {
+    protected static $defaultName = 'app:create-account';
+
+    protected static $defaultDescription = 'Creates a new account.';
+
     private string $plainPassword;
+
+    private EntityManagerInterface $entityManager;
 
     private ValidatorInterface $validator;
 
-    private EntityManager $entityManager;
-
-    private UserPasswordHasherInterface $passwordHasher;
-
     public function __construct(
         ValidatorInterface $validator,
-        EntityManager $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        EntityManagerInterface $entityManager
     ) {
         $this->validator = $validator;
         $this->entityManager = $entityManager;
-        $this->passwordHasher = $passwordHasher;
 
         parent::__construct();
     }
@@ -59,10 +58,6 @@ class CreateAccountCommand extends Command
         $this->plainPassword = $helper->ask($input, $output, $question);
     }
 
-    /**
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\ORMException
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $inputOutput = new SymfonyStyle($input, $output);
@@ -71,17 +66,14 @@ class CreateAccountCommand extends Command
         $lastName = $input->getArgument('lastName');
         $email = $input->getArgument('email');
         $cnp = $input->getArgument('cnp');
-        $roles = $input->getArgument('roles');
+        $roles = $input->getOption('role');
 
         $user = new User();
-
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $this->plainPassword);
 
         $user->firstName = $firstName;
         $user->lastName = $lastName;
         $user->email = $email;
-        $user->password = $hashedPassword;
-        $user->setPlainPassword($this->plainPassword);
+        $user->password = $this->plainPassword;
         $user->setRoles($roles);
         $user->cnp = $cnp;
 
@@ -96,7 +88,6 @@ class CreateAccountCommand extends Command
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-        $this->entityManager->refresh($user);
 
         $inputOutput->success('A new user was created');
 
