@@ -69,7 +69,6 @@ class CreateAccountCommand extends Command
         $roles = $input->getOption('role');
 
         $user = new User();
-
         $user->firstName = $firstName;
         $user->lastName = $lastName;
         $user->email = $email;
