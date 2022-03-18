@@ -53,7 +53,6 @@ class ProgrammeImportFromCsvCommand extends Command
             }
 
             $this->importProgrammesFromCsv($handler, $handlerInvalidRow);
-
         } catch (InvalidPathException $exception) {
             echo $exception->getMessage();
             $inputOutput->error('Path was not found.');
