@@ -8,7 +8,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProgrammeImportFromCsvCommand extends Command
 {
@@ -52,7 +51,7 @@ class ProgrammeImportFromCsvCommand extends Command
             return Command::FAILURE;
         } finally {
             fclose($handler);
-            $inputOutput->info('Files closed succesfully!');
+            $inputOutput->info('Files closed successfully!');
         }
         $inputOutput->success('Programmes were imported!');
 
@@ -65,7 +64,7 @@ class ProgrammeImportFromCsvCommand extends Command
         fgetcsv($handler);
         while (($data = fgetcsv($handler, null, '|')) !== false) {
             if (sizeof($data) < 5) {
-                throw new InvalidCSVRowException('There are invalid rows.', 0, null, $data);
+                throw new InvalidCsvRowException('There are invalid rows.', 0, null, $data);
             }
             $array[] = $data;
         }
