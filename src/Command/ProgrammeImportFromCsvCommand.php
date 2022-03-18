@@ -61,6 +61,7 @@ class ProgrammeImportFromCsvCommand extends Command
 
     public function importProgrammesFromCsv($handler): void
     {
+        $array = [];
         fgetcsv($handler);
         while (($data = fgetcsv($handler, null, '|')) !== false) {
             if (sizeof($data) < 5) {
