@@ -19,6 +19,4 @@ class InvalidPathException extends \Exception
     {
         return $this->filePath;
     }
-
-
 }
