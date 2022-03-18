@@ -20,21 +20,18 @@ class ProgrammeImportFromCsvCommand extends Command
 
     private EntityManagerInterface $entityManager;
 
-    private ValidatorInterface $validator;
-
     public function __construct(
         string $programmeMinTimeInMinutes,
         string $programmeMaxTimeInMinutes,
-        EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
+        EntityManagerInterface $entityManager
     ) {
         $this->programmeMaxTimeInMinutes = (int) $programmeMaxTimeInMinutes;
         $this->programmeMinTimeInMinutes = (int) $programmeMinTimeInMinutes;
         $this->entityManager = $entityManager;
-        $this->validator = $validator;
 
         parent::__construct();
     }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $inputOutput = new SymfonyStyle($input, $output);
@@ -42,14 +39,10 @@ class ProgrammeImportFromCsvCommand extends Command
         echo $this->programmeMinTimeInMinutes . PHP_EOL;
         echo $this->programmeMaxTimeInMinutes . PHP_EOL;
 
-        $handler = fopen('/home/patricia/Gym/src/Command/Programmes.csv', 'r');
-
-        $array = [];
-
         try {
             $handlerPath = __DIR__ . '/Programmes.csv';
             if (file_exists($handlerPath)) {
-                $handler = fopen($handlerPath, 'r');
+                $handler = fopen('/home/patricia/Gym/src/Command/Programmes.csv', 'r');
             }
             $this->importProgrammesFromCsv($handler);
         } catch (InvalidCSVRowException $exception) {
@@ -66,42 +59,6 @@ class ProgrammeImportFromCsvCommand extends Command
         return Command::SUCCESS;
     }
 
-
-//        fgetcsv($handler);
-//        while (($data = fgetcsv($handler, null, '|')) == 1) {
-//            $array[] = $data;
-//        }
-//
-//        foreach ($array as $column) {
-//            $name = $column[0];
-//            $description = $column[1];
-//            $startTime = $column[2];
-//            $endTime = $column[3];
-//            $isOnline = $column[4];
-//
-//            $programme = new Programme();
-//            $programme->name = $name;
-//            $programme->description = $description;
-//            $programme->setStartTime($startTime);
-//            $programme->setEndTime($endTime);
-//
-//            $this->entityManager->persist($programme);
-//            $this->entityManager->flush();
-//
-////            throw new InvalidCsvRowException(
-////                'There are invalid rows.',
-////                0,
-////                null,
-////                ['Name', 'Description', 'Start time', 'End time', 'Online']
-////            );
-////        }
-//
-//            fclose($handler);
-//
-//            $inputOutput->success('Programmes inserted.');
-//            return Command::SUCCESS;
-//        }
-
     public function importProgrammesFromCsv($handler): void
     {
         fgetcsv($handler);
@@ -111,7 +68,6 @@ class ProgrammeImportFromCsvCommand extends Command
             }
             $array[] = $data;
         }
-//        $array[] = $data;
 
         foreach ($array as $column) {
             $name = $column[0];
