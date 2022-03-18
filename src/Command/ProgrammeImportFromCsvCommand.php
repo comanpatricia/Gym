@@ -40,10 +40,23 @@ class ProgrammeImportFromCsvCommand extends Command
 
         try {
             $handlerPath = __DIR__ . '/Programmes.csv';
+            $handlerInvalidRow = __DIR__ . '/InvalidRowsReturned.txt';
             if (file_exists($handlerPath)) {
-                $handler = fopen('/home/patricia/Gym/src/Command/Programmes.csv', 'r');
+                $handler = fopen('$handlerPath', 'r');
+            } else {
+                throw new InvalidPathException('The path in not valid.', 0, null, $handlerPath);
             }
-            $this->importProgrammesFromCsv($handler);
+            if (file_exists($handlerInvalidRow)) {
+                $handlerInvalidRow = fopen('$handlerPath', 'a+');
+            } else {
+                throw new InvalidPathException('The path in not valid.', 0, null, $handlerInvalidRow);
+            }
+
+            $this->importProgrammesFromCsv($handler, $handlerInvalidRow);
+
+        } catch (InvalidPathException $exception) {
+            echo $exception->getMessage();
+            $inputOutput->error('Path was not found.');
         } catch (InvalidCSVRowException $exception) {
             echo $exception->getMessage();
             $inputOutput->error('Programmes were not imported.');
@@ -74,7 +87,7 @@ class ProgrammeImportFromCsvCommand extends Command
             $description = $column[1];
             $startTime = date_create_from_format('d.m.Y H:i', $column[2]);
             $endTime = date_create_from_format('d.m.Y H:i', $column[3]);
-            $isOnline = $column[4];
+            $isOnline = filter_var($column[4], FILTER_VALIDATE_BOOLEAN);
 
             $programme = new Programme();
             $programme->name = $name;
