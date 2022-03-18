@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use Throwable;
+
 class InvalidCsvRowException extends \Exception
 {
     private array $csvRow;
