@@ -2,15 +2,21 @@
 
 namespace App\Command;
 
+use App\Command\Exceptions\InvalidCsvRowException;
+use App\Command\Exceptions\InvalidPathException;
 use App\Entity\Programme;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Psr\Log\LoggerAwareTrait;
 
-class ProgrammeImportFromCsvCommand extends Command
+class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected static $defaultName = 'app:programme-import-csv';
 
     private int $programmeMinTimeInMinutes;
@@ -39,16 +45,14 @@ class ProgrammeImportFromCsvCommand extends Command
         echo $this->programmeMaxTimeInMinutes . PHP_EOL;
 
         try {
-            $handlerPath = __DIR__ . '/Programmes.csv';
             $handlerInvalidRow = __DIR__ . '/InvalidRowsReturned.txt';
-            if (file_exists($handlerPath)) {
-                $handler = fopen('$handlerPath', 'r');
-            } else {
+            $handlerPath = '/home/patricia/Gym/src/Command/Programmes.csv';
+            var_dump($handlerPath);
+            $handler = fopen($handlerPath, 'r');
+            if (!file_exists($handlerPath)) {
                 throw new InvalidPathException('The path in not valid.', 0, null, $handlerPath);
             }
-            if (file_exists($handlerInvalidRow)) {
-                $handlerInvalidRow = fopen('$handlerPath', 'a+');
-            } else {
+            if (!file_exists($handlerInvalidRow)) {
                 throw new InvalidPathException('The path in not valid.', 0, null, $handlerInvalidRow);
             }
 
@@ -87,6 +91,7 @@ class ProgrammeImportFromCsvCommand extends Command
             $startTime = date_create_from_format('d.m.Y H:i', $column[2]);
             $endTime = date_create_from_format('d.m.Y H:i', $column[3]);
             $isOnline = filter_var($column[4], FILTER_VALIDATE_BOOLEAN);
+            $maxParticipants = $column[5];
 
             $programme = new Programme();
             $programme->name = $name;
@@ -94,6 +99,7 @@ class ProgrammeImportFromCsvCommand extends Command
             $programme->setStartTime($startTime);
             $programme->setEndTime($endTime);
             $programme->isOnline = $isOnline;
+            $programme->maxParticipants = $maxParticipants;
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();
