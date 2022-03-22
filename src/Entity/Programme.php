@@ -48,12 +48,14 @@ class Programme
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="trainer_id", referencedColumnName="id")
+     * @Groups("api:programme:all")
      */
     private ?User $trainer;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Room")
      * @ORM\JoinColumn(name="room_id", referencedColumnName="id")
+     * @Groups("api:programme:all")
      */
     private Room $room;                         //ne folosim de conceptul de "tabela pivot"
 
@@ -72,6 +74,7 @@ class Programme
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank()
+     * @Groups("api:programme:all")
      */
     public int $maxParticipants = 0;
 

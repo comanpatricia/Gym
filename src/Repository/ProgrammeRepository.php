@@ -13,6 +13,16 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
+    public function getAll(): array
+    {
+        $query =  $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from('App:Programme', 'p')
+            ->getQuery();
+
+        return $query->getResult();
+    }
 //    public function getNotAvailableRoom($startTime, $endTime): array
 //    {
 //        $entityManager = $this->getEntityManager();

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Programme;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,13 +25,11 @@ class RoomRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-
-//
 //    public function assignARoom(Programme $programme)
 //    {
 //        $entityManager = $this->getEntityManager();
 //
-//        $rooms = $this->getAllRooms();
+//        $rooms = $this->getAll();
 //
 //        $queryBuilder = $this->entityManager
 //            ->createQueryBuilder()
