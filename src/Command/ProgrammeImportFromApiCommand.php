@@ -5,26 +5,35 @@ namespace App\Command;
 use App\Entity\Programme;
 use App\Validator\CaesarCipher;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class ProgrammeImportFromApiCommand extends Command
+class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected static $defaultName = 'app:programme-import-api';
 
     private EntityManagerInterface $entityManager;
 
     private HttpClientInterface $client;
 
+    private ValidatorInterface $validator;
+
     public function __construct(
         EntityManagerInterface $entityManager,
-        HttpClientInterface $client
+        HttpClientInterface $client,
+        ValidatorInterface $validator
     ) {
         $this->entityManager = $entityManager;
         $this->client = $client;
+        $this->validator = $validator;
 
         parent::__construct();
     }
@@ -42,8 +51,6 @@ class ProgrammeImportFromApiCommand extends Command
             $description = CaesarCipher::decipher($row['description'], 8);
             $startTime = date_create_from_format('d.m.Y H:i', $row['startDate']);
             $endTime = date_create_from_format('d.m.Y H:i', $row['endDate']);
-//            $startTime = new \DateTime($row['startTime']);
-//            $endTime = new \DateTime($row['endTime']);
             $isOnline = filter_var($row['isOnline'], FILTER_VALIDATE_BOOLEAN);
             $maxParticipants = (int) $row['maxParticipants'];
 
@@ -54,6 +61,14 @@ class ProgrammeImportFromApiCommand extends Command
             $programme->setEndTime($endTime);
             $programme->isOnline = $isOnline;
             $programme->maxParticipants = $maxParticipants;
+
+            $violationList = $this->validator->validate($programme);
+            if ($violationList->count() > 0) {
+                $message = 'Not able to import programme';
+                $this->logger->warning($message);
+
+                throw new \Exception($message);
+            }
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();
