@@ -2,32 +2,29 @@
 
 namespace App\Repository;
 
-//use App\Entity\Programme;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 class RoomRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Room::class);
     }
 
-    public function getAllRooms()
+    public function getAll(): array
     {
-        $query = $this->getEntityManager()
+        $query =  $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
-            ->from('Room', 'r');
-//
-//        return $query->getQuery();
-//        $testQ = $query->execute();
-//        var_dump($testQ);
+            ->from('App:Room', 'r')
+            ->getQuery();
 
-        return $query->getResult();                        // returns an array of Room objects
+        return $query->getResult();
     }
+
+
 //
 //    public function assignARoom(Programme $programme)
 //    {

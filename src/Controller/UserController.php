@@ -23,13 +23,13 @@ class UserController implements LoggerAwareInterface
 
     private ValidatorInterface $validator;
     private EntityManagerInterface $entityManager;
-    private RoomRepository $roomRepository;
+//    private RoomRepository $roomRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator, RoomRepository $roomRepository)
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
-        $this->roomRepository = $roomRepository;
+//        $this->roomRepository = $roomRepository;
     }
 
     /**
@@ -57,7 +57,7 @@ class UserController implements LoggerAwareInterface
         $this->entityManager->refresh($user);
         $savedDto = UserDto::createFromUser($user);
 
-        $this->roomRepository->getAllRooms();
+//        $this->roomRepository->getAllRooms();
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
     }

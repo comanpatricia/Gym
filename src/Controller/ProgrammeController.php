@@ -2,34 +2,38 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ProgrammeRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route(path="/api/programmes")
  */
 class ProgrammeController
 {
-    private ValidatorInterface $validator;
-    private EntityManagerInterface $entityManager;
+    private ProgrammeRepository $programmeRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
+    private SerializerInterface $serializer;
+
+    public function __construct(ProgrammeRepository $programmeRepository, SerializerInterface $serializer)
     {
-        $this->entityManager = $entityManager;
-        $this->validator = $validator;
+        $this->programmeRepository = $programmeRepository;
+        $this->serializer = $serializer;
     }
 
     /**
      * @Route(methods={"GET"})
      */
-    public function showProgrammes(SerializerInterface $serializer)
+    public function showProgrammes(): JsonResponse
     {
-        $json = $serializer->serialize(
-//            $product,
+        $json = $this->serializer->serialize(
+            $this->programmeRepository->findAll(),
             'json',
             ['groups' => 'api:programme:all']
         );
+
+        return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 }
