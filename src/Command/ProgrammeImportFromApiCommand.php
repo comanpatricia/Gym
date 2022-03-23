@@ -54,8 +54,8 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
             ++$importedRows;
             $name = CaesarCipher::decipher($row['name'], 8);
             $description = CaesarCipher::decipher($row['description'], 8);
-            $startTime = date_create_from_format('d.m.Y H:i', $row['startDate']);
-            $endTime = date_create_from_format('d.m.Y H:i', $row['endDate']);
+            $startTime = \DateTime::createFromFormat('d.m.Y H:i', $row['startDate']);
+            $endTime = \DateTime::createFromFormat('d.m.Y H:i', $row['endDate']);
             $isOnline = filter_var($row['isOnline'], FILTER_VALIDATE_BOOLEAN);
             $maxParticipants = (int) $row['maxParticipants'];
 

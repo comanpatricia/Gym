@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Room;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class RoomRepository extends ServiceEntityRepository
@@ -24,22 +27,44 @@ class RoomRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findFirstAvailable(\DateTime $startTime, \DateTime $endTime, int $maxParticipants): Room
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function findFirstAvailable(DateTime $startTime, DateTime $endTime, int $maxParticipants): Room
     {
-        $query = $this->getEntityManager()
+        var_dump($this->getEntityManager()
             ->createQueryBuilder()
             ->select('DISTINCT r')
             ->setMaxResults(1)
             ->from('App\Entity\Room', 'r')
-            ->join('App\Entity\Programme', 'p')
+            ->leftJoin('App\Entity\Programme', 'p')
             ->where('p.startTime >= :endTime')
+            ->orWhere('p.endTime <= :startTime')
             ->groupBy('r.id')
             ->having('r.capacity >= :maxParticipants')
             ->setParameter('endTime', $endTime)
             ->setParameter('startTime', $startTime)
             ->setParameter('maxParticipants', $maxParticipants)
-            ->getQuery();
+            ->getQuery()
+            ->getResult()
+        );
+        die;
 
-        return $query->getResult();
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('DISTINCT r')
+            ->setMaxResults(1)
+            ->from('App\Entity\Room', 'r')
+            ->leftJoin('App\Entity\Programme', 'p')
+            ->where('p.startTime >= :endTime')
+            ->orWhere('p.endTime <= :startTime')
+            ->groupBy('r.id')
+            ->having('r.capacity >= :maxParticipants')
+            ->setParameter('endTime', $endTime)
+            ->setParameter('startTime', $startTime)
+            ->setParameter('maxParticipants', $maxParticipants)
+            ->getQuery()
+            ->getSingleResult();
     }
 }

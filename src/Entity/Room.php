@@ -30,7 +30,7 @@ class Room
     public int $capacity;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Building", mappedBy="room")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Building")
      * @ORM\JoinColumn(name="building_id", referencedColumnName="id")
      */
     private Building $building;

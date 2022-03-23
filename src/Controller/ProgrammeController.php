@@ -29,6 +29,9 @@ class ProgrammeController
      */
     public function showProgrammes(): JsonResponse
     {
+        var_dump($this->programmeRepository->findAll());
+        die;
+
         $json = $this->serializer->serialize(
             $this->programmeRepository->findAll(),
             'json',
@@ -38,17 +41,17 @@ class ProgrammeController
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
-    /**
-     * @Route (path="/sort", methods={"GET"})
-     */
-    public function sortProgrammes(Request $request): Response
-    {
-        $sort = $request->query->get('by');
-        $sortOrder = $request->query->get('order');
-
-        $data = $this->programmeRepository->getSortedBy($sort, $sortOrder);
-        $sortedProgrammes = $this->serializer->serialize($data, 'json', ['groups' => 'api:programme:all']);
-
-        return new JsonResponse($sortedProgrammes, Response::HTTP_OK, [], true);
-    }
+//    /**
+//     * @Route (path="/sort", methods={"GET"})
+//     */
+//    public function sortProgrammes(Request $request): Response
+//    {
+//        $sort = $request->query->get('by');
+//        $sortOrder = $request->query->get('order');
+//
+//        $data = $this->programmeRepository->getSortedBy($sort, $sortOrder);
+//        $sortedProgrammes = $this->serializer->serialize($data, 'json', ['groups' => 'api:programme:all']);
+//
+//        return new JsonResponse($sortedProgrammes, Response::HTTP_OK, [], true);
+//    }
 }
