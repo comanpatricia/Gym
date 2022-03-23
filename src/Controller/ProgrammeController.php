@@ -44,9 +44,9 @@ class ProgrammeController
     public function showFilters(Request $request): Response
     {
         $sortedBy = $request->query->get('sortBy', '');
-        $orderedBy = $request->query->get('orderBy', 'ASC');
+//        $orderedBy = $request->query->get('orderBy', 'ASC');
 
-        $result = $this->programmeRepository->getSortedData($sortedBy, $orderedBy);
+        $result = $this->programmeRepository->getSortedData($sortedBy);
 
         $json = $this->serializer->serialize(
             $result,

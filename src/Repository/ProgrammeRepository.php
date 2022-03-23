@@ -60,4 +60,18 @@ class ProgrammeRepository extends ServiceEntityRepository
 //
 //        return $query->getQuery()->getResult();
 //    }
+
+
+//    public function exactSearchByName($exactName): array
+//    {
+//        return $this->getEntityManager()
+//            ->createQueryBuilder()
+//            ->select('DISTINCT p')
+//            ->select('p')
+//            ->from('App\Entity\Programme', 'p')
+//            ->where('p.name LIKE :str')
+//            ->setParameter('exactName', $exactName)
+//            ->getQuery()
+//            ->execute();
+//    }
 }
