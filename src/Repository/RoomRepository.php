@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Programme;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,7 +15,7 @@ class RoomRepository extends ServiceEntityRepository
 
     public function getAll(): array
     {
-        $query =  $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
             ->from('App:Room', 'r')
@@ -25,28 +24,22 @@ class RoomRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-//    public function assignARoom(Programme $programme)
-//    {
-//        $entityManager = $this->getEntityManager();
-//
-//        $rooms = $this->getAll();
-//
-//        $queryBuilder = $this->entityManager
-//            ->createQueryBuilder()
-//            ->select('r.id')
-//            ->from('Programme', 'p')
-//            ->leftJoin('p.room', 'r');
-//
-//        $query = $queryBuilder->getQuery();
-//        $test = $query->execute();
-//        var_dump($test);
-//
-//        foreach ($rooms as $room) {
-//            if ($programme->maxParticipants < $room->capacity) {
-//                $programme->setRoom($room);
-//
-//                return;
-//            }
-//        }
-//    }
+    public function findFirstAvailable(\DateTime $startTime, \DateTime $endTime, int $maxParticipants): Room
+    {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('DISTINCT r')
+            ->setMaxResults(1)
+            ->from('App\Entity\Room', 'r')
+            ->join('App\Entity\Programme', 'p')
+            ->where('p.startTime >= :endTime')
+            ->groupBy('r.id')
+            ->having('r.capacity >= :maxParticipants')
+            ->setParameter('endTime', $endTime)
+            ->setParameter('startTime', $startTime)
+            ->setParameter('maxParticipants', $maxParticipants)
+            ->getQuery();
+
+        return $query->getResult();
+    }
 }

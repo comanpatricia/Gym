@@ -31,13 +31,13 @@ class Room
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Building", mappedBy="room")
+     * @ORM\JoinColumn(name="building_id", referencedColumnName="id")
      */
     private Building $building;
 
 
     public function getId(): int
     {
-
         return $this->id;
     }
 

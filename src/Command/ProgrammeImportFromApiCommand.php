@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Programme;
+use App\Repository\RoomRepository;
 use App\Validator\CaesarCipher;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -26,14 +27,18 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
 
     private ValidatorInterface $validator;
 
+    private RoomRepository $roomRepository;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         HttpClientInterface $client,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        RoomRepository $roomRepository
     ) {
         $this->entityManager = $entityManager;
         $this->client = $client;
         $this->validator = $validator;
+        $this->roomRepository = $roomRepository;
 
         parent::__construct();
     }
@@ -69,6 +74,8 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
 
                 throw new \Exception($message);
             }
+            $foundRoom = $this->roomRepository->findFirstAvailable($startTime, $endTime, $maxParticipants);
+            $programme->setRoom($foundRoom);
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();
