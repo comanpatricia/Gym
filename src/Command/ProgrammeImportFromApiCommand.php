@@ -74,8 +74,9 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
 
                 throw new \Exception($message);
             }
-            $foundRoom = $this->roomRepository->findFirstAvailable($startTime, $endTime, $maxParticipants);
-            $programme->setRoom($foundRoom);
+
+            $this->roomRepository->findOne();
+            var_dump($this->roomRepository->findOne());
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();

@@ -24,15 +24,14 @@ class ProgrammeRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-//    public function getSortedBy(string $ordered, int $maxParticipants): array
-//    {
-//        $query = $this->getEntityManager()
-//            ->createQueryBuilder()
-//            ->select('p')
-//            ->from('App:Programme', 'p')
-//            ->orderBy("p.$maxParticipants", $ordered)
-//            ->getQuery();
-//
-//        return $query->execute();
-//    }
+    public function getSortedProgrammes(string $name, string $order): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('p')
+            ->from('App:Programme', 'p')
+            ->orderBy('$name', $order)
+            ->getQuery()
+            ->getResult();
+    }
 }
