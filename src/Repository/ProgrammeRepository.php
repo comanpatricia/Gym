@@ -15,23 +15,49 @@ class ProgrammeRepository extends ServiceEntityRepository
 
     public function getAll(): array
     {
-        $query =  $this->getEntityManager()
+        return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
             ->from('App:Programme', 'p')
-            ->getQuery();
-
-        return $query->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
-    public function getSortedProgrammes(string $name, string $order): array
+    public function getSortedData(string $field): array
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('p')
-            ->from('App:Programme', 'p')
-            ->orderBy('$name', $order)
+            ->from('App\Entity\Programme', 'p')
+            ->orderBy("p.$field", 'ASC')
             ->getQuery()
             ->getResult();
     }
+
+//    public function getFilters(string $sortedBy, string $orderedBy, array $filters): array
+//    {
+//        $query = $this->getEntityManager()
+//        ->createQueryBuilder()
+//        ->select('p')
+//        ->from('App\Entity\Programme', 'p');
+//
+//        foreach ($filters as $key => $value) {
+//            if ('' != $value) {
+//                $query = $query->where("p.$key = :$key");
+//                $query->setParameter(':key', $value);
+//            }
+//        }
+//
+//        $orderedBy = mb_strtoupper($orderedBy);
+//
+//        if (!in_array($orderedBy, ['asc', 'ASC', 'desc', 'DESC'])) {
+//            $orderedBy = 'ASC';
+//        }
+//
+//        if ('' != $sortedBy) {
+//            $query = $query->orderBy("p.$sortedBy", $orderedBy);
+//        }
+//
+//        return $query->getQuery()->getResult();
+//    }
 }
