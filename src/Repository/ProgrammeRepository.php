@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Programme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use InvalidArgumentException;
 
 class ProgrammeRepository extends ServiceEntityRepository
 {
@@ -13,43 +14,32 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
-    public function getAll(): array
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r')
-            ->from('App:Programme', 'p')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getFilters(
+    public function findAllFiltered(
         array $paginate,
         array $filters,
-        string $sortBy,
-        string $orderBy
+        ?string $sortBy,
+        string $sortDirection
     ): array {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('p')
             ->from('App\Entity\Programme', 'p')
-            ->setFirstResult(($paginate['currentPage'] * $paginate['maxPerPage']) - $paginate['maxPerPage'])
-            ->setMaxResults($paginate['maxPerPage']);
+            ->setFirstResult(($paginate['currentPage'] - 1 ) * $paginate['perPage'])
+            ->setMaxResults($paginate['perPage']);
 
         foreach ($filters as $key => $value) {
-            if ('' != $value) {
+            if (null != $value) {
                 $query = $query->where("p.$key = :$key");
-                $query->setParameter(':key', $value);
+                $query->setParameter(":$key", $value);
             }
         }
 
-        $orderBy = mb_strtoupper($orderBy);
-        if (!in_array($orderBy, ['ASC', 'DESC'])) {
-            $orderBy = 'ASC';
-        }
-
-        if ('' != $sortBy) {
-            $query = $query->orderBy("p.$sortBy", $orderBy);
+        if (null != $sortBy) {
+            $sortDirection = strtoupper($sortDirection);
+            if (!in_array($sortDirection, ['ASC', 'DESC'])) {
+                throw new InvalidArgumentException('Direction must be ASC or DESC');
+            }
+            $query = $query->orderBy("p.$sortBy", $sortDirection);
         }
 
         return $query->getQuery()->getResult();
