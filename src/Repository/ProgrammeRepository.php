@@ -14,16 +14,6 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
-//    public function getAll(): array
-//    {
-//        return $this->getEntityManager()
-//            ->createQueryBuilder()
-//            ->select('r')
-//            ->from('App:Programme', 'p')
-//            ->getQuery()
-//            ->getResult();
-//    }
-
     public function findAllFiltered(
         array $paginate,
         array $filters,
