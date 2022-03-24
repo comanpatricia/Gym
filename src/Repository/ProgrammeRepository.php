@@ -23,35 +23,11 @@ class ProgrammeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-//    public function getSortedData(string $field): array
-//    {
-//        return $this->getEntityManager()
-//            ->createQueryBuilder()
-//            ->select('p')
-//            ->from('App\Entity\Programme', 'p')
-//            ->orderBy("p.$field", 'ASC')
-//            ->getQuery()
-//            ->getResult();
-//    }
-//
-//    public function exactSearchByName($exactName): array
-//    {
-//        return $this->getEntityManager()
-//            ->createQueryBuilder()
-//            ->select('DISTINCT p')
-//            ->select('p')
-//            ->from('App\Entity\Programme', 'p')
-//            ->where('p.name LIKE :str')
-//            ->setParameter('exactName', $exactName)
-//            ->getQuery()
-//            ->execute();
-//    }
-
-    public function getPaginatedFilteredSorted(
+    public function getFilters(
         array $paginate,
         array $filters,
-        string $sort,
-        string $direction
+        string $sortBy,
+        string $orderBy
     ): array {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
@@ -66,14 +42,14 @@ class ProgrammeRepository extends ServiceEntityRepository
                 $query->setParameter(':key', $value);
             }
         }
-        $direction = mb_strtoupper($direction);
 
-        if (!in_array($direction, ['ASC', 'DESC'])) {
-            $direction = 'ASC';
+        $orderBy = mb_strtoupper($orderBy);
+        if (!in_array($orderBy, ['ASC', 'DESC'])) {
+            $orderBy = 'ASC';
         }
 
-        if ('' != $sort) {
-            $query = $query->orderBy("p.$sort", $direction);
+        if ('' != $sortBy) {
+            $query = $query->orderBy("p.$sortBy", $orderBy);
         }
 
         return $query->getQuery()->getResult();
