@@ -23,45 +23,17 @@ class ProgrammeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getSortedData(string $field): array
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('p')
-            ->from('App\Entity\Programme', 'p')
-            ->orderBy("p.$field", 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
-//    public function getFilters(string $sortedBy, string $orderedBy, array $filters): array
+//    public function getSortedData(string $field): array
 //    {
-//        $query = $this->getEntityManager()
-//        ->createQueryBuilder()
-//        ->select('p')
-//        ->from('App\Entity\Programme', 'p');
-//
-//        foreach ($filters as $key => $value) {
-//            if ('' != $value) {
-//                $query = $query->where("p.$key = :$key");
-//                $query->setParameter(':key', $value);
-//            }
-//        }
-//
-//        $orderedBy = mb_strtoupper($orderedBy);
-//
-//        if (!in_array($orderedBy, ['asc', 'ASC', 'desc', 'DESC'])) {
-//            $orderedBy = 'ASC';
-//        }
-//
-//        if ('' != $sortedBy) {
-//            $query = $query->orderBy("p.$sortedBy", $orderedBy);
-//        }
-//
-//        return $query->getQuery()->getResult();
+//        return $this->getEntityManager()
+//            ->createQueryBuilder()
+//            ->select('p')
+//            ->from('App\Entity\Programme', 'p')
+//            ->orderBy("p.$field", 'ASC')
+//            ->getQuery()
+//            ->getResult();
 //    }
-
-
+//
 //    public function exactSearchByName($exactName): array
 //    {
 //        return $this->getEntityManager()
@@ -74,4 +46,36 @@ class ProgrammeRepository extends ServiceEntityRepository
 //            ->getQuery()
 //            ->execute();
 //    }
+
+    public function getPaginatedFilteredSorted(
+        array $paginate,
+        array $filters,
+        string $sort,
+        string $direction
+    ): array {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('p')
+            ->from('App\Entity\Programme', 'p')
+            ->setFirstResult(($paginate['currentPage'] * $paginate['maxPerPage']) - $paginate['maxPerPage'])
+            ->setMaxResults($paginate['maxPerPage']);
+
+        foreach ($filters as $key => $value) {
+            if ('' != $value) {
+                $query = $query->where("p.$key = :$key");
+                $query->setParameter(':key', $value);
+            }
+        }
+        $direction = mb_strtoupper($direction);
+
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+
+        if ('' != $sort) {
+            $query = $query->orderBy("p.$sort", $direction);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }
