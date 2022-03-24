@@ -13,7 +13,7 @@ services:
         bind:
             $programmeMinTimeInMinutes: '%env(PROGRAMME_MIN_TIME_IN_MINUTES)%'
             $programmeMaxTimeInMinutes: '%env(PROGRAMME_MAX_TIME_IN_MINUTES)%'
-            $viewOnly: '%env(VIEW_ONLY)%'
+            $defaultPerPage: '%env(DEFAULT_PER_PAGE)%'
 
 
     # makes classes in src/ available to be used as services

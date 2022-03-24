@@ -22,37 +22,37 @@ class ProgrammeController implements LoggerAwareInterface
 
     private SerializerInterface $serializer;
 
-    private int $viewOnly;
+    private int $defaultPerPage;
 
     public function __construct(
         ProgrammeRepository $programmeRepository,
         SerializerInterface $serializer,
-        string $viewOnly
+        string $defaultPerPage
     ) {
         $this->programmeRepository = $programmeRepository;
         $this->serializer = $serializer;
-        $this->viewOnly = (int) $viewOnly;
+        $this->defaultPerPage = (int) $defaultPerPage;
     }
 
     /**
      * @Route(methods={"GET"})
      */
-    public function showFilters(Request $request): Response
+    public function listFilteredProgrammes(Request $request): Response
     {
         $paginate['currentPage'] = $request->query->get('page', 1);
-        $paginate['maxPerPage'] = $request->query->get('size', $this->viewOnly);
+        $paginate['perPage'] = $request->query->get('perPage', $this->defaultPerPage);
 
-        $filters['name'] = $request->query->get('name', '');
-        $filters['id'] = $request->query->get('id', '');
+        $filters['name'] = $request->query->get('name');
+        $filters['id'] = $request->query->get('id');
 
-        $sortBy = $request->query->get('sortBy', '');
-        $orderBy = $request->query->get('orderBy', '');
+        $sortBy = $request->query->get('sortBy');
+        $sortDirection = $request->query->get('sortDirection', 'ASC');
 
-        $result = $this->programmeRepository->getFilters(
+        $result = $this->programmeRepository->findAllFiltered(
             $paginate,
             $filters,
             $sortBy,
-            $orderBy
+            $sortDirection
         );
 
         $json = $this->serializer->serialize(
