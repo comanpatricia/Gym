@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
-use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -15,7 +14,7 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route(path="/api/user")
+ * @Route(path="/api/users")
  */
 class UserController implements LoggerAwareInterface
 {
@@ -23,13 +22,11 @@ class UserController implements LoggerAwareInterface
 
     private ValidatorInterface $validator;
     private EntityManagerInterface $entityManager;
-//    private RoomRepository $roomRepository;
 
     public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
-//        $this->roomRepository = $roomRepository;
     }
 
     /**
@@ -49,6 +46,7 @@ class UserController implements LoggerAwareInterface
                 /** @var ConstraintViolation $error */
                 $errorArray[$error->getPropertyPath()] = $error->getMessage();
             }
+
             return new JsonResponse($errorArray);
         }
 
@@ -56,8 +54,6 @@ class UserController implements LoggerAwareInterface
         $this->entityManager->flush();
         $this->entityManager->refresh($user);
         $savedDto = UserDto::createFromUser($user);
-
-//        $this->roomRepository->getAllRooms();
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
     }
