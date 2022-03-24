@@ -6,6 +6,7 @@ use App\Controller\Dto\UserDto;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as MyAssert;
 
@@ -29,6 +30,7 @@ class User
      * @ORM\Column(type="string", length=255, nullable="false")
      * @Assert\NotBlank()
      * @Assert\Regex("/^[A-Z][a-z]+$/")
+     * @Groups("api:programme:all")
      */
     public string $firstName = '';
 
@@ -36,6 +38,7 @@ class User
      * @ORM\Column(type="string", length=255, nullable="false")
      * @Assert\Regex("/^[A-Z][a-z]+$/")
      * @Assert\NotBlank()
+     * @Groups("api:programme:all"))
      */
     public string $lastName = '';
 

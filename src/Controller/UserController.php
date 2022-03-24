@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
+use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -22,11 +23,13 @@ class UserController implements LoggerAwareInterface
 
     private ValidatorInterface $validator;
     private EntityManagerInterface $entityManager;
+//    private RoomRepository $roomRepository;
 
     public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
+//        $this->roomRepository = $roomRepository;
     }
 
     /**
@@ -53,6 +56,8 @@ class UserController implements LoggerAwareInterface
         $this->entityManager->flush();
         $this->entityManager->refresh($user);
         $savedDto = UserDto::createFromUser($user);
+
+//        $this->roomRepository->getAllRooms();
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
     }

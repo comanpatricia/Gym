@@ -1,0 +1,22 @@
+[
+  {
+    "id" : 1,
+    "name": "Dans",
+    "description": "hai si danseaza cu noi",
+    "startDate": "2022-05-12T10:00:00+02:00",
+    "EndDate": "2022-05-13T10:00:00+02:00",
+    "isOnline": true,
+    "trainer": {
+      "id": 1,
+      "firstName": "Patricia",
+      "lastName": "Coman"
+    },
+    "room": {
+      "id": 1,
+      "name": "room1"
+    },
+    "maxParticipants": 20,
+    "numberOfReaminedSpots": 15
+
+  }
+]
