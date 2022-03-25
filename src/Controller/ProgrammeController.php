@@ -39,6 +39,8 @@ class ProgrammeController implements LoggerAwareInterface
      */
     public function listFilteredProgrammes(Request $request): Response
     {
+        $this->logger->info('List programmes.');
+
         $paginate['currentPage'] = $request->query->get('page', 1);
         $paginate['perPage'] = $request->query->get('perPage', $this->defaultPerPage);
 

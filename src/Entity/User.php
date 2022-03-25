@@ -3,25 +3,28 @@
 namespace App\Entity;
 
 use App\Controller\Dto\UserDto;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator as MyAssert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLES = ['ROLE_USER', 'ROLE_ADMIN'];
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private int $id = 0;
@@ -43,11 +46,17 @@ class User
     public string $lastName = '';
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Email
      * @Assert\NotBlank()
      */
     public string $email = '';
+
+    /**
+     * @ORM\Column(type="json")
+     * @Assert\Choice(choices=User::ROLES, multiple=true)
+     */
+    private array $roles = [];
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -59,7 +68,7 @@ class User
     /**
      * @Assert\Regex ("/^[0-9a-zA-Z\.\_]{8,}$/")
      */
-    public ?string $plainPassword = '';
+    private ?string $plainPassword = '';
 
     /**
      * @ORM\Column(type="string", length=13, options={"fixed" = true})
@@ -68,12 +77,6 @@ class User
      * @Assert\Regex("/^([1-8])([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])(0[0-9]|[1-3]\d|4[0-8])(\d{3})([0-9])$/")
      */
     public string $cnp = '';
-
-    /**
-     * @ORM\Column(type="json")
-     * @Assert\Choice(choices=User::ROLES, multiple=true)
-     */
-    private array $roles = [];
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Programme", mappedBy="customers")
@@ -85,23 +88,56 @@ class User
         $this->programmes = new ArrayCollection();
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->email;
     }
 
     public function getRoles(): array
     {
         $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
 
-        $roles[] = self::ROLE_USER;
-
-        return array_values(array_unique($roles));
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
-        $this->roles = array_values(array_unique($roles));
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
@@ -118,16 +154,14 @@ class User
         return $this;
     }
 
-    public function getPlainPassword(): ?string
+    public function getSalt(): ?string
     {
-        return $this->plainPassword;
+        return null;
     }
 
-    public function setPlainPassword(?string $plainPassword): self
+    public function eraseCredentials()
     {
-        $this->plainPassword = $plainPassword;
-
-        return $this;
+         $this->plainPassword = null;
     }
 
     public function addProgramme(Programme $programme): self
@@ -153,27 +187,6 @@ class User
 
         return $this;
     }
-
-//    public function addRole(string $role): self
-//    {
-//        if ($this->roles->contains($role)) {
-//            return $this;
-//        }
-//        $this->roles->add($role);
-//
-//        return $this;
-//    }
-//
-//    public function removeRole(string $role): self
-//    {
-//        if (!$this->roles->contains($role)) {
-//
-//            return $this;
-//        }
-//        $this->roles->removeElement($role);
-//
-//        return $this;
-//    }
 
     public function jsonSerialize(): array
     {
