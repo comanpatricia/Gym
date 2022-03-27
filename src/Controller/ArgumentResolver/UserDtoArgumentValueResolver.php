@@ -26,7 +26,6 @@ class UserDtoArgumentValueResolver implements ArgumentValueResolverInterface
         $userDto->password = $decodedData['password'] ?? '';
         $userDto->cnp = $decodedData['cnp'] ?? '';
 
-//        var_dump($userDto);
         yield $userDto;
     }
 }
