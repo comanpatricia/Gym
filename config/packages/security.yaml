@@ -25,9 +25,6 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-#        api_secured:
-#            pattern: ^/api/
-#            stateless: true
         main:
             lazy: true
             provider: all_users
@@ -41,7 +38,5 @@ security:
 
     access_control:
      - { path: ^api/users, roles: ROLE_ADMIN }
-#     - { path: ^api/programmes, roles: ROLE_ADMIN }
      - { path: ^api/admin, roles: ROLE_ADMIN }
      - { path: ^api/trainer, roles: ROLE_TRAINER }
-    # - { path: ^/profile, roles: ROLE_USER }

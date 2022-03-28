@@ -165,9 +165,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->token;
     }
 
-    public function setToken(string $token): void
+    public function setToken(string $token): self
     {
         $this->token = $token;
+
+        return $this;
     }
 
     public function getSalt(): ?string

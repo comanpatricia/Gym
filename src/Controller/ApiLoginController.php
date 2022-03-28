@@ -32,7 +32,7 @@ class ApiLoginController extends AbstractController
     public function index(): Response
     {
         /** @var User $user */
-        $user = $this->security->getUser();
+        $user = $this->getUser();
 
         if (null === $user) {
             return new JsonResponse([
