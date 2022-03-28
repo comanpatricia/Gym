@@ -46,9 +46,7 @@ class UserController implements LoggerAwareInterface
 
         $user = User::createFromDto($userDto);
 
-        $plainPassword = $this->getPlainPassword($user, $this->plainPassword);
-
-        $user->setPassword($this->userPasswordHasher->hashPassword($user, $this-$plainPassword));
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
 
         $errors = $this->validator->validate($user);
         if (count($errors) > 0) {
@@ -66,6 +64,8 @@ class UserController implements LoggerAwareInterface
         $this->entityManager->flush();
         $this->entityManager->refresh($user);
         $savedDto = UserDto::createFromUser($user);
+
+        $this->logger->info('User registered successfully!');
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
     }

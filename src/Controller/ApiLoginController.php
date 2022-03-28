@@ -6,12 +6,14 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Validator\Constraints\Uuid;
+use Symfony\Component\Uid\Uuid;
 
+/**
+ * @Route("/api")
+ */
 class ApiLoginController extends AbstractController
 {
     private UserRepository $userRepository;
@@ -38,18 +40,13 @@ class ApiLoginController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $apiToken = Uuid::v4();
-        $user->setApiToken($apiToken);
+        $token = Uuid::v4();
+        $user->setApiToken($token);
         $this->userRepository->add($user);
 
         return new JsonResponse([
             'user' => $user->getUserIdentifier(),
-            'token' => $apiToken
+            'token' => $token
         ]);
-
-//        return $this->json([
-//            'message' => 'Welcome to api controller!',
-//            'path' => 'src/Controller/ApiLoginController.php',
-//        ]);
     }
 }
