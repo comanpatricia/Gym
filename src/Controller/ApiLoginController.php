@@ -41,7 +41,7 @@ class ApiLoginController extends AbstractController
         }
 
         $token = Uuid::v4();
-        $user->setApiToken($token);
+        $user->setToken($token);
         $this->userRepository->add($user);
 
         return new JsonResponse([

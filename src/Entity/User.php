@@ -63,12 +63,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @MyAssert\Password
      */
     public string $password = '';
 
     /**
-     * @Assert\Regex ("/^[0-9a-zA-Z\.\_]{8,}$/")
+     * @MyAssert\Password
      */
     private ?string $plainPassword = '';
 
@@ -88,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
      */
-    private string $apiToken = '';
+    private ?string $token = null;
 
     public function __construct()
     {
@@ -161,16 +160,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getApiToken(): string
+    public function getToken(): string
     {
-        return $this->apiToken;
+        return $this->token;
     }
 
-    public function setApiToken(string $apiToken): self
+    public function setToken(string $token): void
     {
-        $this->apiToken = $apiToken;
-
-        return $this;
+        $this->token = $token;
     }
 
     public function getSalt(): ?string

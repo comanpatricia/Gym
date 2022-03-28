@@ -17,7 +17,7 @@ security:
         app_token_provider:
             entity:
                 class: App\Entity\User
-                property: apiToken
+                property: token
         all_users:
             chain:
                 providers: [ 'app_user_provider', 'app_token_provider' ]
@@ -35,9 +35,9 @@ security:
             json_login:
                 check_path: api_login
                 username_path: email
-#            guard:
-#                authenticators:
-#                    - App\Security\TokenAuthenticator
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
 
     access_control:
      - { path: ^api/users, roles: ROLE_ADMIN }

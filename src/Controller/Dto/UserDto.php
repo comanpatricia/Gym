@@ -29,7 +29,6 @@ class UserDto
         $dto->firstName = $user->firstName;
         $dto->email = $user->email;
         $dto->cnp = $user->cnp;
-        $dto->password = $user->password;
 
         return $dto;
     }
