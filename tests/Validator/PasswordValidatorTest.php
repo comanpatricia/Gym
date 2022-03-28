@@ -35,8 +35,8 @@ class PasswordValidatorTest extends ConstraintValidatorTestCase
     public function getValidPassword(): array
     {
         return [
-            ['Admin123!'],
-            ['ADMIN123!'],
+            ['Admin123'],
+            ['ADMIN123'],
         ];
     }
 
