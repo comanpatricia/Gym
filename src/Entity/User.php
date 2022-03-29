@@ -160,12 +160,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
 
-    public function setToken(string $token): self
+    public function setToken(?string $token): self
     {
         $this->token = $token;
 
@@ -208,10 +208,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addRole(string $role): self
     {
-        if (in_array($role, $this->roles)) {
+        if (in_array($role, $this->roles, true)) {
             return $this;
         }
         $this->roles[] = $role;
+
         return $this;
     }
 
