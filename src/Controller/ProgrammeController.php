@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ProgrammeRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,6 +40,11 @@ class ProgrammeController implements LoggerAwareInterface
      */
     public function listFilteredProgrammes(Request $request): Response
     {
+        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+        if (!$acceptHeader->has('application/xml')) {
+            return new Response("Header not accepted", Response::HTTP_BAD_REQUEST);
+        }
+
         $this->logger->info('List programmes.');
 
         $paginate['currentPage'] = $request->query->get('page', 1);
@@ -56,13 +62,24 @@ class ProgrammeController implements LoggerAwareInterface
             $sortBy,
             $sortDirection
         );
+//
+//        $json = $this->serializer->serialize(
+//            $result,
+//            'json',
+//            ['groups' => 'api:programme:all']
+//        );
 
-        $json = $this->serializer->serialize(
-            $result,
-            'json',
-            ['groups' => 'api:programme:all']
-        );
+        if ($acceptHeader->has('application/xml')) {
+            $json = $this->serializer->serialize(
+                $result,
+                'xml',
+                ['groups' => 'api:programme:all']
+            );
 
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+//        return new Response($json, "Header accepted", Response::HTTP_OK, ['Content-Type' => 'application/xml']);
+            return new Response($json, Response::HTTP_OK, ['Content-Type' => 'application/xml']);
+        }
+//        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        return new Response('BAD REQUEST', Response::HTTP_BAD_REQUEST);
     }
 }
