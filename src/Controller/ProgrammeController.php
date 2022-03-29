@@ -40,8 +40,8 @@ class ProgrammeController implements LoggerAwareInterface
      */
     public function listFilteredProgrammes(Request $request): Response
     {
-        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
-        if (!$acceptHeader->has('application/xml')) {
+        $acceptXMLHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+        if (!$acceptXMLHeader->has('application/xml')) {
             return new Response("Header not accepted", Response::HTTP_BAD_REQUEST);
         }
 
@@ -62,24 +62,17 @@ class ProgrammeController implements LoggerAwareInterface
             $sortBy,
             $sortDirection
         );
-//
-//        $json = $this->serializer->serialize(
-//            $result,
-//            'json',
-//            ['groups' => 'api:programme:all']
-//        );
 
-        if ($acceptHeader->has('application/xml')) {
-            $json = $this->serializer->serialize(
+        if ($acceptXMLHeader->has('application/xml')) {
+            $xml = $this->serializer->serialize(
                 $result,
                 'xml',
                 ['groups' => 'api:programme:all']
             );
 
-//        return new Response($json, "Header accepted", Response::HTTP_OK, ['Content-Type' => 'application/xml']);
-            return new Response($json, Response::HTTP_OK, ['Content-Type' => 'application/xml']);
+            return new Response($xml, Response::HTTP_OK, ['Content-Type' => 'application/xml']);
         }
-//        return new JsonResponse($json, Response::HTTP_OK, [], true);
+
         return new Response('BAD REQUEST', Response::HTTP_BAD_REQUEST);
     }
 }
