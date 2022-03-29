@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateAccountCommand extends Command
@@ -18,6 +19,8 @@ class CreateAccountCommand extends Command
     protected static $defaultName = 'app:create-account';
 
     protected static $defaultDescription = 'Creates a new account.';
+
+    private UserPasswordHasherInterface $userPasswordHasher;
 
     private string $plainPassword;
 
@@ -27,10 +30,12 @@ class CreateAccountCommand extends Command
 
     public function __construct(
         ValidatorInterface $validator,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $userPasswordHasher
     ) {
         $this->validator = $validator;
         $this->entityManager = $entityManager;
+        $this->userPasswordHasher = $userPasswordHasher;
 
         parent::__construct();
     }
@@ -72,7 +77,7 @@ class CreateAccountCommand extends Command
         $user->firstName = $firstName;
         $user->lastName = $lastName;
         $user->email = $email;
-        $user->password = $this->plainPassword;
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, $this->plainPassword));
         $user->setRoles($roles);
         $user->cnp = $cnp;
 

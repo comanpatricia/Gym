@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -15,6 +16,7 @@ use App\Validator as MyAssert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -61,12 +63,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @MyAssert\Password
      */
     public string $password = '';
 
     /**
-     * @Assert\Regex ("/^[0-9a-zA-Z\.\_]{8,}$/")
+     * @MyAssert\Password
      */
     private ?string $plainPassword = '';
 
@@ -82,6 +83,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Programme", mappedBy="customers")
      */
     private Collection $programmes;
+
+    /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private ?string $token = null;
 
     public function __construct()
     {
@@ -154,6 +160,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
     public function getSalt(): ?string
     {
         return null;
@@ -188,6 +206,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function addRole(string $role): self
+    {
+        if (in_array($role, $this->roles, true)) {
+            return $this;
+        }
+        $this->roles[] = $role;
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         return [
@@ -207,7 +235,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $user->lastName = $userDto->lastName;
         $user->email = $userDto->email;
         $user->cnp = $userDto->cnp;
-        $user->password = $userDto->password;
+        $user->plainPassword = $userDto->password;
+        $user->addRole('ROLE_USER');
 
         return $user;
     }

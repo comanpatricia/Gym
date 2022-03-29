@@ -14,7 +14,7 @@ class PasswordValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, Password::class);
         }
 
-        $regex = "/^(?=.*[A-Z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/m";
+        $regex = "/^[0-9a-zA-Z]{8,}$/";
         $regexResponse = preg_match_all($regex, $value, $matches, PREG_SET_ORDER, 0);
 
         if ($regexResponse) {
