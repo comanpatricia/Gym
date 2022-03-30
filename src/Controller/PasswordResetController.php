@@ -34,7 +34,7 @@ class PasswordResetController extends AbstractController
             ]);
         }
 
-        return $this->render('PasswordResetRequestType/resetPassword.html.twig', [
+        return $this->render('resetPassword.html.twig', [
             'form' => $form->createView(),
         ]);
     }
