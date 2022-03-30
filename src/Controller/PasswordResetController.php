@@ -21,20 +21,20 @@ class PasswordResetController extends AbstractController
 
     private MailerInterface $mailer;
 
-//    private UserRepository $userRepository;
+    private UserRepository $userRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer
-//        UserRepository $userRepository
+        MailerInterface $mailer,
+        UserRepository $userRepository
     ) {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
-//        $this->userRepository = $userRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
-     * @Route(path="/reset/password")
+     * @Route(path="/first/try")
      */
     public function resetPassword(Request $request): Response
     {
@@ -54,28 +54,22 @@ class PasswordResetController extends AbstractController
     }
 
     /**
-     * @Route(path="/send/email")
+     * @Route(path="/reset/password")
      */
     public function sendEmail(Request $request): Response
     {
         $form = $this->createForm(PasswordResetRequestType::class)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $email = $form->getData();
-//            $user = $this->entityManager->find(User::class, $email);
+            $email = $form->get('email')->getData();
 
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-//            $obj = $em->getRepository('AcmeSampleBundle:User')->functionInRepository()
-
-
-            $user = $this->entityManager->getRepository(User::class)->findBy($email);
-
-            if (null !== $user) {
-                $email = (new Email())
+            if ($user !== null) {
+                $emailUser = (new Email())
                     ->from('comanpatricia27@gmail.com')
-                    ->to(new Address($email))
+                    ->to(new Address($user->email))
                     ->subject('Reset your password')
-                    ->context(['expiration_date' => new \DateTime('+2 minutes')])
                     ->text('Here is the link to reset your password')
                     ->html('<p>Password changer!</p>');
 
@@ -86,10 +80,10 @@ class PasswordResetController extends AbstractController
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
 
-                $this->mailer->send($email);
+                $this->mailer->send($emailUser);
             }
 
-            return $this->render('resetPassword.html.twig', [
+            return $this->render('signup.html.twig', [
                 'form' => $form->createView(),
             ]);
         }
