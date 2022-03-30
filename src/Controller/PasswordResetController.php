@@ -21,16 +21,16 @@ class PasswordResetController extends AbstractController
 
     private MailerInterface $mailer;
 
-    private UserRepository $userRepository;
+//    private UserRepository $userRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer,
-        UserRepository $userRepository
+        MailerInterface $mailer
+//        UserRepository $userRepository
     ) {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
-        $this->userRepository = $userRepository;
+//        $this->userRepository = $userRepository;
     }
 
     /**
@@ -62,38 +62,39 @@ class PasswordResetController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->getData();
-            $this->entityManager->find(UserRepository::class, $email);
+//            $user = $this->entityManager->find(User::class, $email);
 
-//            /** @var User $user */
-//            $user = $this->getUser();
 
-//            $this->entityManager->persist($user);
-//            $this->entityManager->flush();
+//            $obj = $em->getRepository('AcmeSampleBundle:User')->functionInRepository()
+
+
+            $user = $this->entityManager->getRepository(User::class)->findBy($email);
 
             if (null !== $user) {
                 $email = (new Email())
                     ->from('comanpatricia27@gmail.com')
                     ->to(new Address($email))
-                    ->subject('Reset password')
+                    ->subject('Reset your password')
                     ->context(['expiration_date' => new \DateTime('+2 minutes')])
                     ->text('Here is the link to reset your password')
                     ->html('<p>Password changer!</p>');
 
-
+                $tokenReset = Uuid::v4();
+                $user->setTokenReset($tokenReset);
+                $user->setTokenResetCreatedAt(new \DateTime('now'));
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
 
-                $mailer->send($email);
-
+                $this->mailer->send($email);
             }
 
-            return $this->render('signup.html.twig', [
+            return $this->render('resetPassword.html.twig', [
                 'form' => $form->createView(),
             ]);
         }
 
-        return $this->render('signup.html.twig', [
+        return $this->render('resetPassword.html.twig', [
             'form' => $form->createView(),
         ]);
     }
