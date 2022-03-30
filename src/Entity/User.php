@@ -89,6 +89,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $token = null;
 
+    /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private ?string $tokenReset = null;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?\DateTime $tokenResetCreatedAt;
+
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
@@ -168,6 +178,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setToken(?string $token): self
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    public function getTokenReset(): ?string
+    {
+        return $this->tokenReset;
+    }
+
+    public function setTokenReset(?string $tokenReset): self
+    {
+        $this->tokenReset = $tokenReset;
+
+        return $this;
+    }
+
+    public function getTokenResetCreatedAt(): ?\DateTime
+    {
+        return $this->tokenResetCreatedAt;
+    }
+
+    public function setTokenResetCreatedAt(?\DateTime $tokenResetCreatedAt): self
+    {
+        $this->tokenResetCreatedAt = $tokenResetCreatedAt;
 
         return $this;
     }
