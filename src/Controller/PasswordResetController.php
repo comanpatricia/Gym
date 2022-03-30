@@ -62,7 +62,7 @@ class PasswordResetController extends AbstractController
                     ->context([
                         'link' => $this->router->generate(
                             'change_password',
-                            ['token' => $user->getToken()],
+                            ['token' => $user->getTokenReset()],
                             UrlGeneratorInterface::ABSOLUTE_URL
                         )
                     ])
@@ -105,20 +105,5 @@ class PasswordResetController extends AbstractController
         return $this->render('resetPassword.html.twig', [
             'form' => $form->createView(),
         ]);
-
-
-//        $form = $this->createForm(PasswordResetRequestType::class)->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $passwordReset = $form->getData();
-//
-//            return $this->redirectToRoute('task_success', [
-//                'passwordReset' => $passwordReset,
-//            ]);
-//        }
-//
-//        return $this->render('resetPassword.html.twig', [
-//            'form' => $form->createView(),
-//        ]);
     }
 }
