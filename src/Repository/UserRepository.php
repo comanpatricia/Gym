@@ -6,9 +6,13 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,10 +20,20 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  * @method User[]    findAll()
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, LoggerAwareInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    use LoggerAwareTrait;
+
+    private ValidatorInterface $validator;
+
+    private UserPasswordHasherInterface $userPasswordHasher;
+
+    public function __construct(ManagerRegistry $registry, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher)
     {
+//        $this->registry = $registry;
+        $this->validator = $validator;
+        $this->userPasswordHasher = $userPasswordHasher;
+
         parent::__construct($registry, User::class);
     }
 
@@ -56,5 +70,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function compareTokensWhenChangingPassword(?string $tokenReset): string
+    {
+        $currentUser = $this->findOneBy(['tokenReset' => $tokenReset]);
+        $currentToken = $currentUser->getTokenReset();
+
+        if ($currentToken !== $tokenReset) {
+            $message = 'Tokens are not the same';
+            $this->logger->warning($message);
+
+            throw new \Exception($message);
+        }
+
+        return $currentToken;
     }
 }

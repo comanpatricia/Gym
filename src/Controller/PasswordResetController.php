@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\Type\ChangePasswordRequestType;
 use App\Form\Type\PasswordResetRequestType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,18 +27,18 @@ class PasswordResetController extends AbstractController
 
     private RouterInterface $router;
 
-    private UrlGeneratorInterface $urlGenerator;
+    private UserRepository $userRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
         RouterInterface $router,
-        UrlGeneratorInterface $urlGenerator
+        UserRepository $userRepository
     ) {
         $this->entityManager = $entityManager;
         $this->router = $router;
         $this->mailer = $mailer;
-        $this->urlGenerator = $urlGenerator;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -45,9 +47,6 @@ class PasswordResetController extends AbstractController
     public function sendEmail(Request $request): Response
     {
         $form = $this->createForm(PasswordResetRequestType::class)->handleRequest($request);
-//        $token = $this->user =
-//        $url = $this->urlGenerator->generate('url_password_reset', [], UrlGeneratorInterface::ABSOLUTE_URL);
-//        $tokenReset = "$url?tokenReset$tokenReset";
 
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('email')->getData();
@@ -55,6 +54,13 @@ class PasswordResetController extends AbstractController
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
             if ($user !== null) {
+                $tokenReset = Uuid::v4();
+                $user->setTokenReset($tokenReset);
+                $user->setTokenResetCreatedAt(new \DateTime('now'));
+
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+
                 $emailUser = (new TemplatedEmail())
                     ->to(new Address($user->email))
                     ->subject('Reset your password')
@@ -67,13 +73,6 @@ class PasswordResetController extends AbstractController
                         )
                     ])
                     ->htmlTemplate('email.html.twig');
-
-                $tokenReset = Uuid::v4();
-                $user->setTokenReset($tokenReset);
-                $user->setTokenResetCreatedAt(new \DateTime('now'));
-
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
 
                 $this->mailer->send($emailUser);
             }
@@ -90,16 +89,27 @@ class PasswordResetController extends AbstractController
 
     /**
      * @Route(path="/change/password", name="change_password")
+     * @throws Exception
      */
     public function changePassword(Request $request): Response
     {
-        $form = $this->createForm(ChangePasswordRequestType::class)->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $passwordChange = $form->getData();
+        $token = $this->userRepository->compareTokensWhenChangingPassword($currentToken);
+//        $user = $this->entityManager->getRepository(User::class)->findOneBy(['tokenReset' => $tokenReset]);
 
-            return $this->redirectToRoute('task_success', [
-                'passwordChange' => $passwordChange,
-            ]);
+        $form = $this->createForm(ChangePasswordRequestType::class)->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('newPassword')->getData();
+
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['newPassword' => $newPassword]);
+
+            if (null !== $user) {
+                $this->userRepository->upgradePassword($user, $newPassword);
+
+                return $this->redirectToRoute('resetPassword.html.twig', [
+                'newPassword' => $newPassword,
+                ]);
+            }
         }
 
         return $this->render('resetPassword.html.twig', [
