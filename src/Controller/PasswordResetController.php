@@ -93,15 +93,16 @@ class PasswordResetController extends AbstractController
      */
     public function changePassword(Request $request): Response
     {
-        $token = $this->userRepository->compareTokensWhenChangingPassword($currentToken);
-//        $user = $this->entityManager->getRepository(User::class)->findOneBy(['tokenReset' => $tokenReset]);
-
+        $user = $this->userRepository->compareTokensWhenChangingPassword($request->get('token'));
+        if (null === $user) {
+            return new Response('token is not valid', Response::HTTP_NOT_FOUND);
+        }
         $form = $this->createForm(ChangePasswordRequestType::class)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $newPassword = $form->get('newPassword')->getData();
 
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['newPassword' => $newPassword]);
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['password' => $newPassword]);
 
             if (null !== $user) {
                 $this->userRepository->upgradePassword($user, $newPassword);
