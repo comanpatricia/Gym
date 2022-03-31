@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -29,16 +30,20 @@ class PasswordResetController extends AbstractController
 
     private UserRepository $userRepository;
 
+    private UserPasswordHasherInterface $userPasswordHasher;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
         RouterInterface $router,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserPasswordHasherInterface $userPasswordHasher
     ) {
         $this->entityManager = $entityManager;
         $this->router = $router;
         $this->mailer = $mailer;
         $this->userRepository = $userRepository;
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     /**
@@ -102,10 +107,10 @@ class PasswordResetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newPassword = $form->get('newPassword')->getData();
 
-            $this->userRepository->upgradePassword($user, $newPassword);
+            $this->userRepository->upgradePassword($user, $this->userPasswordHasher->hashPassword($user, $newPassword));
 
-            return $this->redirectToRoute('change_password', [
-                'newPassword' => $newPassword,
+            return $this->render('success.html.twig', [
+                'form' => $form->createView(),
                 ]);
         }
 
