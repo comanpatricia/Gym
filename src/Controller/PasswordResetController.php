@@ -102,15 +102,11 @@ class PasswordResetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newPassword = $form->get('newPassword')->getData();
 
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['password' => $newPassword]);
+            $this->userRepository->upgradePassword($user, $newPassword);
 
-            if (null !== $user) {
-                $this->userRepository->upgradePassword($user, $newPassword);
-
-                return $this->redirectToRoute('resetPassword.html.twig', [
+            return $this->redirectToRoute('change_password', [
                 'newPassword' => $newPassword,
                 ]);
-            }
         }
 
         return $this->render('resetPassword.html.twig', [
