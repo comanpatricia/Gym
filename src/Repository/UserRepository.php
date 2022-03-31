@@ -28,8 +28,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
-    public function __construct(ManagerRegistry $registry, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        ValidatorInterface $validator,
+        UserPasswordHasherInterface $userPasswordHasher
+    ) {
 //        $this->registry = $registry;
         $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
