@@ -68,20 +68,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         $user->setPassword($newHashedPassword);
-//        $this->_em->persist($user);
         $this->_em->flush();
     }
 
     public function compareTokensWhenChangingPassword(?string $tokenReset): ?User
     {
         $currentUser = $this->findOneBy(['tokenReset' => $tokenReset]);
-//        $currentToken = $currentUser->getTokenReset();
 
         if (null !== $currentUser) {
             $message = 'User not found';
             $this->logger->warning($message);
-
-//            throw new \Exception($message);
         }
 
         return $currentUser;
