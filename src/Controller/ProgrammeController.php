@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\EventSubscriber\JsonResponseContentSubscriber;
+use App\EventSubscriber\XmlResponseContentSubscriber;
 use App\Repository\ProgrammeRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -24,6 +26,10 @@ class ProgrammeController implements LoggerAwareInterface
     private SerializerInterface $serializer;
 
     private int $defaultPerPage;
+
+//    private JsonResponseContentSubscriber $jsonResponseContentSubscriber;
+//
+//    private XmlResponseContentSubscriber $xmlResponseContentSubscriber;
 
     public function __construct(
         ProgrammeRepository $programmeRepository,
