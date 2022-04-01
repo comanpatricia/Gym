@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -28,7 +29,14 @@ class JsonResponseContentSubscriber implements EventSubscriberInterface
         $accept = $event->getRequest()->headers->get('Accept');
 
         if ($accept === 'application/json') {
-            $event->setResponse(new JsonResponse());
+            $event->setResponse(new JsonResponse(
+                $json = $this->serializer->serialize(
+                    $event,
+                    'xml',
+                    ['groups' => 'api:programme:all']
+                ),
+                Response::HTTP_OK, ['Content-Type' => 'application/xml'], true
+            ));
         }
     }
 }
