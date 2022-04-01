@@ -56,7 +56,7 @@ class PasswordResetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('email')->getData();
 
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+            $user = $this->userRepository->findOneBy(['email' => $email]);
 
             if ($user !== null) {
                 $tokenReset = Uuid::v4();

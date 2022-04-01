@@ -33,7 +33,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ValidatorInterface $validator,
         UserPasswordHasherInterface $userPasswordHasher
     ) {
-//        $this->registry = $registry;
+        $this->registry = $registry;
         $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
 
