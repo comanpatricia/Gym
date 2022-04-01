@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\Dto\UserDto;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -27,14 +28,18 @@ class UserController implements LoggerAwareInterface
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
+    private UserRepository $userRepository;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
-        UserPasswordHasherInterface $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher,
+        UserRepository $userRepository
     ) {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -68,5 +73,23 @@ class UserController implements LoggerAwareInterface
         $this->logger->info('User registered successfully!');
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route(path="/{id}", methods="DELETE")
+     */
+    public function softDeleteUser(string $email): Response
+    {
+//        $userSoftDeleted = $this->getId();
+        $userSoftDeleted = $this->userRepository->find($email);
+
+        if (null === $userSoftDeleted) {
+
+            return new Response('User does not exist', Response::HTTP_NOT_FOUND);
+        }
+
+        $this->userRepository->remove($userSoftDeleted);
+
+        return new Response('User soft-deleted', Response::HTTP_OK)
     }
 }
