@@ -74,22 +74,4 @@ class UserController implements LoggerAwareInterface
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
     }
-
-    /**
-     * @Route(path="/{id}", methods="DELETE")
-     */
-    public function softDeleteUser(string $email): Response
-    {
-//        $userSoftDeleted = $this->getId();
-        $userSoftDeleted = $this->userRepository->find($email);
-
-        if (null === $userSoftDeleted) {
-
-            return new Response('User does not exist', Response::HTTP_NOT_FOUND);
-        }
-
-        $this->userRepository->remove($userSoftDeleted);
-
-        return new Response('User soft-deleted', Response::HTTP_OK)
-    }
 }

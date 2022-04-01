@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -58,7 +59,7 @@ class Programme
      * @ORM\JoinColumn(name="room_id", referencedColumnName="id")
      * @Groups("api:programme:all")
      */
-    private Room $room;                         //ne folosim de conceptul de "tabela pivot"
+    private Room $room;
 
     /**
      * @ORM\ManyToMany(targetEntity="User", inversedBy="programmes")
