@@ -6,6 +6,8 @@ use App\Controller\Dto\UserDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,16 +32,20 @@ class UserController implements LoggerAwareInterface
 
     private UserRepository $userRepository;
 
+    private User $user;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
         UserPasswordHasherInterface $userPasswordHasher,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        User $user
     ) {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
         $this->userRepository = $userRepository;
+        $this->user = $user;
     }
 
     /**
@@ -73,5 +79,44 @@ class UserController implements LoggerAwareInterface
         $this->logger->info('User registered successfully!');
 
         return new JsonResponse($savedDto, Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route(path="/{id}", methods="DELETE")
+     */
+    public function softDeleteUser(int $id): Response
+    {
+        $userToDelete = $this->userRepository->findOneBy(['id' => $id]);
+
+        if (null === $userToDelete) {
+            return new Response('User does not exist', Response::HTTP_NOT_FOUND);
+        }
+        $this->userRepository->remove($userToDelete);
+        $this->entityManager->flush();
+
+        $this->logger->info('An user was soft-deleted');
+
+        return new Response('User soft-deleted successfully', Response::HTTP_OK);
+    }
+
+    /**
+     * @Route(path="/recover/{id}", methods="POST")
+     */
+    public function recoverAccount(int $id): Response
+    {
+        $accountToRecover = $this->userRepository->findOneBy(['id' => $id]);
+        if (null === $accountToRecover) {
+            return new Response('Account does not exist in our database', Response::HTTP_NOT_FOUND);
+        }
+
+        $filters = $this->entityManager->getFilters();
+        $filters->disable('softdeleteable');
+
+        $this->user->setDeletedAt($id);
+        $this->entityManager->flush();
+
+        $this->logger->info('An user account was recovered');
+
+        return new Response('User account recovered successfully', Response::HTTP_OK);
     }
 }
