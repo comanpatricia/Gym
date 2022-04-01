@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Controller\Dto\UserDto;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +20,7 @@ use App\Validator as MyAssert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -90,6 +93,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", unique=true, nullable=true)
      */
     private ?string $token = null;
+
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private ?DateTime $deletedAt;
 
     public function __construct()
     {
@@ -174,6 +182,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
     public function getSalt(): ?string
     {
         return null;
@@ -242,19 +262,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $user;
     }
-
-//    /**
-//     * @Route(path="/{id}", methods="DELETE")
-//     */
-//    public function softDeleteUser(string $email): Response
-//    {
-//        $userSoftDeleted = $this->getId();
-//
-//        if (null === $userSoftDeleted) {
-//
-//            return new Response('User not found');
-//        }
-//
-//        $this->re
-//    }
 }
