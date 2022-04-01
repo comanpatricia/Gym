@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProgrammeRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  */
 class Programme
 {
@@ -78,6 +79,12 @@ class Programme
      */
     public int $maxParticipants = 0;
 
+    /**
+     * @var \DateTime|null
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private \DateTime $deletedAt;
+
     public function __construct()
     {
         $this->customers = new ArrayCollection();
@@ -145,6 +152,18 @@ class Programme
     public function setCustomers(Collection $customers): self
     {
         $this->customers = $customers;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }
