@@ -6,8 +6,6 @@ use App\Controller\Dto\UserDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,20 +30,16 @@ class UserController implements LoggerAwareInterface
 
     private UserRepository $userRepository;
 
-    private User $user;
-
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
         UserPasswordHasherInterface $userPasswordHasher,
-        UserRepository $userRepository,
-        User $user
+        UserRepository $userRepository
     ) {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
         $this->userRepository = $userRepository;
-        $this->user = $user;
     }
 
     /**
@@ -104,15 +98,21 @@ class UserController implements LoggerAwareInterface
      */
     public function recoverAccount(int $id): Response
     {
+        $filters = $this->entityManager->getFilters();
+        $filters->disable('softdeleteable');
+
         $accountToRecover = $this->userRepository->findOneBy(['id' => $id]);
         if (null === $accountToRecover) {
             return new Response('Account does not exist in our database', Response::HTTP_NOT_FOUND);
         }
 
-        $filters = $this->entityManager->getFilters();
-        $filters->disable('softdeleteable');
+//        $filters = $this->entityManager->getFilters();
+//        $filters->disable('softdeleteable');
 
-        $this->user->setDeletedAt($id);
+        $this->entityManager->find(User::class, $id)->setDeletedAt(null);
+//        $this->userRepository->remove($accountToRecover);
+//        $this->user->setDeletedAt(null);
+        $this->userRepository->
         $this->entityManager->flush();
 
         $this->logger->info('An user account was recovered');
