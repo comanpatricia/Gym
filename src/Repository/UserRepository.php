@@ -20,20 +20,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * @method User[]    findAll()
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, LoggerAwareInterface
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    use LoggerAwareTrait;
-
-    private ValidatorInterface $validator;
-
     private UserPasswordHasherInterface $userPasswordHasher;
 
     public function __construct(
         ManagerRegistry $registry,
-        ValidatorInterface $validator,
         UserPasswordHasherInterface $userPasswordHasher
     ) {
-        $this->validator = $validator;
         $this->userPasswordHasher = $userPasswordHasher;
 
         parent::__construct($registry, User::class);
@@ -75,13 +69,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function compareTokensWhenChangingPassword(?string $tokenReset): ?User
     {
-        $currentUser = $this->findOneBy(['tokenReset' => $tokenReset]);
-
-        if (null !== $currentUser) {
-            $message = 'User not found';
-            $this->logger->warning($message);
-        }
-
-        return $currentUser;
+        return $this->findOneBy(['tokenReset' => $tokenReset]);
     }
 }
