@@ -43,7 +43,7 @@ class UserController implements LoggerAwareInterface
     }
 
     /**
-     * @Route(methods={"POST"})
+     * @Route(path="/register", methods={"POST"})
      */
     public function register(UserDto $userDto): Response
     {
@@ -106,13 +106,8 @@ class UserController implements LoggerAwareInterface
             return new Response('Account does not exist in our database', Response::HTTP_NOT_FOUND);
         }
 
-//        $filters = $this->entityManager->getFilters();
-//        $filters->disable('softdeleteable');
-
-        $this->entityManager->find(User::class, $id)->setDeletedAt(null);
-//        $this->userRepository->remove($accountToRecover);
-//        $this->user->setDeletedAt(null);
-        $this->userRepository->
+        $accountToRecover->setDeletedAt(null);
+        $this->entityManager->persist($accountToRecover);
         $this->entityManager->flush();
 
         $this->logger->info('An user account was recovered');
