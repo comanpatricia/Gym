@@ -40,3 +40,4 @@ security:
      - { path: ^api/users, roles: ROLE_ADMIN }
      - { path: ^api/admin, roles: ROLE_ADMIN }
      - { path: ^api/trainer, roles: ROLE_TRAINER }
+     - { path: ^/reset/password }
