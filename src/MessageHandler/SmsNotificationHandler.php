@@ -2,13 +2,21 @@
 
 namespace App\MessageHandler;
 
+use App\Http\Client\SmsNotificationClient;
 use App\Message\SmsNotification;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class SmsNotificationHandler implements MessageHandlerInterface
 {
-//    public function __invoke(SmsNotification $smsNotification)
-//    {
-//
-//    }
+    private SmsNotificationClient $smsNotificationClient;
+
+    public function __construct(SmsNotificationClient $smsNotificationClient)
+    {
+        $this->smsNotificationClient = $smsNotificationClient;
+    }
+
+    public function __invoke(SmsNotification $notification)
+    {
+        $this->smsNotificationClient->sendSmsNotification($notification->getContent(), $notification->getPhoneNumber());
+    }
 }
