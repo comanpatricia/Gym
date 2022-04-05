@@ -2,23 +2,27 @@
 
 namespace App\Message;
 
-use App\Repository\UserRepository;
-
 class SmsNotification
 {
-//    private $content;
-//
-////    private UserRepository $userRepository;
-//
-//    public function __construct($content)
-//    {
-//        $this->content = $content;
-////        $this->userRepository = $userRepository;
-//    }
-//
-//    public function getContent(): string
-//    {
-//        return $this->content;
-//    }
+    private string $content;
 
+    private string $phoneNumber;
+
+    public function __construct(
+        string $content,
+        string $phoneNumber
+    ) {
+        $this->content = $content;
+        $this->phoneNumber = $phoneNumber;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    public function getPhoneNumber(): string
+    {
+        return $this->phoneNumber;
+    }
 }

@@ -1,5 +1,6 @@
 framework:
     messenger:
+<<<<<<< HEAD
         failure_transport: failed
 
         transports:
@@ -10,3 +11,13 @@ framework:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: sync
             Symfony\Component\Notifier\Message\ChatMessage: sync
             Symfony\Component\Notifier\Message\SmsMessage: sync
+=======
+        transports:
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        routing:
+            App\Message\SmsNotification: async
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+#            Symfony\Component\Notifier\Message\ChatMessage: async
+#            Symfony\Component\Notifier\Message\SmsMessage: async
+>>>>>>> Implementing newsletter functions

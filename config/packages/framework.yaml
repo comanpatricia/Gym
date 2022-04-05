@@ -10,8 +10,8 @@ framework:
         log: true
     http_client:
         scoped_clients:
-            sms.notifications:
-                base_uri: '%env(resolve:SMS_NOTIFICATION_URI%'
+            sms.notification:
+                base_uri: '%env(SMS_NOTIFICATION_URI)%'
                 headers:
-                    name: 'X-API-KEY'
-                    value: '%env(resolve:SMS_NOTIFICATION_API_KEY)%'
+                   - name: 'X-API-KEY'
+                     value: '%env(SMS_NOTIFICATION_API_KEY)%'
