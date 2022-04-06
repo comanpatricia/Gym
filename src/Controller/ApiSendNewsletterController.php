@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Message\NewsletterNotification;
+use App\Mailer\NewsletterNotification;
 use App\Message\SmsNotification;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerAwareInterface;
@@ -18,40 +18,34 @@ class ApiSendNewsletterController extends AbstractController implements LoggerAw
 {
     use LoggerAwareTrait;
 
-    private MailerInterface $mailer;
-
     private UserRepository $userRepository;
 
     private MessageBusInterface $messageBus;
 
+    private NewsletterNotification $newsletterNotification;
+
     public function __construct(
-        MailerInterface $mailer,
         UserRepository $userRepository,
-        MessageBusInterface $messageBus
+        MessageBusInterface $messageBus,
+        NewsletterNotification $newsletterNotification
     ) {
-        $this->mailer = $mailer;
         $this->userRepository = $userRepository;
         $this->messageBus = $messageBus;
+        $this->newsletterNotification = $newsletterNotification;
     }
 
     /**
      * @Route(path="api/users/newsletter", methods={"POST"})
      */
-    public function sendNewsletterNotification(Request $request, string $email): Response
+    public function sendNewsletterNotification(Request $request): Response
     {
-        $userToSend = $this->userRepository->findOneBy(['email' => $email]);
-        if (null === $userToSend) {
-            $this->logger->info('Email was not found');
+        $userToSend = $this->userRepository->findAll();
 
-            return new Response('Email not found', Response::HTTP_NOT_FOUND);
+        foreach ($userToSend as $user) {
+            $this->newsletterNotification->sendEmailNotification($user->email);
+            $this->messageBus->dispatch(new SmsNotification('hello', $user->getPhoneNumber()));
         }
 
-//        $this->newsletterNotification->sendEmailNotification($userToSend->email);
-
-        $this->messageBus->dispatch(new NewsletterNotification($userToSend->get);
-        $this->messageBus->dispatch(new SmsNotification('hello', $userToSend->getPhoneNumber()));
-//        $smsNotification = new SmsNotification($phoneNumber)
-
-        return new Response('Email was sent successfully', Response::HTTP_OK);
+        return new Response('Email and sms were sent successfully', Response::HTTP_OK);
     }
 }
