@@ -85,25 +85,25 @@ class UserController implements LoggerAwareInterface
         if (null === $userToDelete) {
             return new Response('User does not exist', Response::HTTP_NOT_FOUND);
         }
-        $this->userRepository->remove($userToDelete);
+        $this->entityManager->remove($userToDelete);
         $this->entityManager->flush();
 
-        $this->logger->info('An user was soft-deleted');
+        $this->logger->info('An user was deleted');
 
-        return new Response('User soft-deleted successfully', Response::HTTP_OK);
+        return new Response('User was deleted successfully', Response::HTTP_OK);
     }
 
     /**
-     * @Route(path="/recover/{id}", methods="POST")
+     * @Route(path="/recover/{email}", methods="POST")
      */
-    public function recoverAccount(int $id): Response
+    public function recoverAccount(string $email): Response
     {
         $filters = $this->entityManager->getFilters();
         $filters->disable('softdeleteable');
 
-        $accountToRecover = $this->userRepository->findOneBy(['id' => $id]);
+        $accountToRecover = $this->userRepository->findOneBy(['email' => $email]);
         if (null === $accountToRecover) {
-            return new Response('Account does not exist in our database', Response::HTTP_NOT_FOUND);
+            return new Response('No such account', Response::HTTP_NOT_FOUND);
         }
 
         $accountToRecover->setDeletedAt(null);
