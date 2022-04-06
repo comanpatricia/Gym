@@ -104,6 +104,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $phoneNumber = '';
 
+    /**
+     * @ORM\Column(type="string", length=10, options={"fixed" = true})
+     */
+    private ?string $phoneNumber = '';
+
     public function __construct()
     {
         $this->programmes = new ArrayCollection();
@@ -207,6 +212,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTokenResetCreatedAt(?\DateTime $tokenResetCreatedAt): self
     {
         $this->tokenResetCreatedAt = $tokenResetCreatedAt;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
