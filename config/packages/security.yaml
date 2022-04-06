@@ -37,6 +37,8 @@ security:
                     - App\Security\TokenAuthenticator
 
     access_control:
+     - { path: ^/api/login, roles: PUBLIC_ACCESS }
+     - { path: ^/api/users/register, roles: PUBLIC_ACCESS }
      - { path: ^api/users, roles: ROLE_ADMIN }
      - { path: ^api/admin, roles: ROLE_ADMIN }
      - { path: ^api/trainer, roles: ROLE_TRAINER }
