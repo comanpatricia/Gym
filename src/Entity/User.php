@@ -101,7 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private ?\DateTime $tokenResetCreatedAt;
-    
+
     /**
      * @ORM\Column(type="string", length=10, options={"fixed" = true})
      */
