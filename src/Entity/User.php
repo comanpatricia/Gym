@@ -10,8 +10,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -103,6 +101,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private ?\DateTime $tokenResetCreatedAt;
+
+    /**
+     * @ORM\Column(type="string", length=10, options={"fixed" = true})
+     */
+    private ?string $phoneNumber = '';
 
     /**
     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
@@ -212,6 +215,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTokenResetCreatedAt(?\DateTime $tokenResetCreatedAt): self
     {
         $this->tokenResetCreatedAt = $tokenResetCreatedAt;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
