@@ -25,6 +25,17 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        admin:
+            pattern: ^/admin/
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                enable_csrf: true
+            logout:
+                path: admin_logout
+                target: admin_login
         main:
             lazy: true
             provider: all_users
@@ -42,5 +53,6 @@ security:
      - { path: ^/api/users/register, roles: PUBLIC_ACCESS }
      - { path: ^api/users, roles: ROLE_ADMIN }
      - { path: ^api/admin, roles: ROLE_ADMIN }
+     - { path: ^api/admin/dashboard, roles: ROLE_ADMIN }
      - { path: ^api/trainer, roles: ROLE_TRAINER }
      - { path: ^/reset/password }
