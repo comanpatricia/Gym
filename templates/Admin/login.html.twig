@@ -5,18 +5,18 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <form action="{{ path('admin_login') }}" method="post">
-        <h3>Use your credentials to login as an administrator</h3>
+    <form action="{{ path('admin_login') }}" method="post" style="border: 1px solid black; margin: 30px 400px; padding: 40px">
+        <h3 style="margin: 40px">Use your credentials to login as an administrator</h3>
 
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}"/>
+        <label for="username" style="margin-right: 40px">Email:</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Type your email address..."/><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password"/>
+        <label for="password" style="margin-right: 10px">Password:</label>
+        <input type="password" id="password" name="_password" placeholder="Type your password..."/><br><br>
 
         <input type="hidden" name="_target_path" value="/admin/dashboard"/>
 
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        <button type="submit">login</button>
+        <button type="submit">Login</button>
     </form>
 {% endblock %}
