@@ -1,0 +1,5 @@
+{% extends "base.html.twig" %}
+{% block title %}Admins only!{% endblock %}
+{% block body %}
+    <br><br><p style="margin-left: 20px">Hello, {{ app.user.firstName }} {{ app.user.lastName }}!</p>
+{% endblock %}
