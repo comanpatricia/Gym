@@ -57,7 +57,7 @@ class Programme
      * @ORM\JoinColumn(name="room_id", referencedColumnName="id")
      * @Groups("api:programme:all")
      */
-    private Room $room;                         //ne folosim de conceptul de "tabela pivot"
+    private Room $room;
 
     /**
      * @ORM\ManyToMany(targetEntity="User", inversedBy="programmes")
