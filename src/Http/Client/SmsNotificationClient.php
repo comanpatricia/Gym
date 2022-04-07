@@ -9,9 +9,8 @@ class SmsNotificationClient
 {
     public HttpClientInterface $httpClient;
 
-    public function __construct(
-        HttpClientInterface $smsNotification
-    ) {
+    public function __construct(HttpClientInterface $smsNotification)
+    {
         $this->httpClient = $smsNotification;
     }
 

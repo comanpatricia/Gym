@@ -8,10 +8,8 @@ class SmsNotification
 
     private string $phoneNumber;
 
-    public function __construct(
-        string $content,
-        string $phoneNumber
-    ) {
+    public function __construct(string $content, string $phoneNumber)
+    {
         $this->content = $content;
         $this->phoneNumber = $phoneNumber;
     }
