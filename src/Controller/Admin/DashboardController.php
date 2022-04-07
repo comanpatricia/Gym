@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,9 +14,6 @@ class DashboardController extends AbstractController
      */
     public function showDashboard(AuthenticationUtils $authenticationUtils): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        return $this->render('Admin/dashboard.html.twig', []);
+        return $this->render('Admin/dashboard.html.twig');
     }
 }
