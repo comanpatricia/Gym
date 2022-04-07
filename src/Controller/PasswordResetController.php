@@ -109,7 +109,7 @@ class PasswordResetController extends AbstractController
 
             $this->userRepository->upgradePassword($user, $this->userPasswordHasher->hashPassword($user, $newPassword));
 
-            return $this->render('dashboard.html.twig', [
+            return $this->render('success.html.twig', [
                 'form' => $form->createView(),
                 ]);
         }
