@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProgrammesController extends AbstractController
+class ProgrammeController extends AbstractController
 {
     private ProgrammeRepository $programmeRepository;
 
@@ -20,7 +20,7 @@ class ProgrammesController extends AbstractController
     /**
      * @Route("admin/programmes", name="admin_programmes", methods={"GET"})
      */
-    public function getAllUsers(Request $request): Response
+    public function getAllProgrammes(Request $request): Response
     {
         $allProgrammes = $this->programmeRepository->findAll();
 
