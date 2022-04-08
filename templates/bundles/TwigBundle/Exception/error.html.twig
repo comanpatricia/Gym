@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div style="margin-top: 200px; text-align: center">
+        <a style="color: #B0413E; font-size: 50px; font-weight: bold">Oops... an error occurred</a>
+        <h1> The server returned a "{{ status_code }} {{ status_text}}".</h1>
+
+        <p>
+            Something is broken. Please let us know what you were doing when this error occurred. We will fix it as soon as possible. Sorry for any inconvenience caused.
+        </p>
+    </div>
+{% endblock %}
