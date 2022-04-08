@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <div style="border: 1px black;">
+        <h2 style="text-align: center">List of users</h2><br>
+        <table style="width: 75%; margin: auto">
+            <tr>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Id</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">First name</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Last name</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Email address</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Phone number</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Role</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px"></th>
+                <th style="border-bottom: 1px solid grey; padding: 10px"></th>
+            </tr>
+
+            {% for user in allUsers %}
+                <tr>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ user.id }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ user.firstName }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ user.lastName }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ user.email }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ user.phoneNumber }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">
+                        {% for roles in user.roles %}
+                            {{ roles }}
+                        {% endfor %}
+                    </td>
+                    <td><button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">Edit</button></td>
+                    <td><button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">Delete</button></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="text-align: center; margin: 20px">
+        <button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 18px; font-weight: bold">Add user</button>
+    </div>
+{% endblock %}
