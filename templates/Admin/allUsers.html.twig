@@ -14,7 +14,7 @@
                 <th style="border-bottom: 1px solid grey; padding: 10px"></th>
             </tr>
 
-            {% for user in allUsers %}
+            {% for user in users %}
                 <tr>
                     <td style="border-left: 1px grey solid; padding: 5px">{{ user.id }}</td>
                     <td style="border-left: 1px grey solid; padding: 5px">{{ user.firstName }}</td>
@@ -26,13 +26,23 @@
                             {{ roles }}
                         {% endfor %}
                     </td>
-                    <td><button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold"><a href="{{ path('user_update') }}">Edit</a></button></td>
-                    <td><button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">Delete</button></td>
+                    <td>
+                        <button style="background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">
+                                <a href="{{ path('user_update', { 'id': user.id }) }}" style="color: grey; text-decoration: none">Edit</a>
+                        </button>
+                    </td>
+                    <td>
+                        <button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">
+                            <a href="{{ path('user_delete', { 'id': user.id }) }}" style="color: grey; text-decoration: none">Delete</a>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
     </div>
     <div style="text-align: center; margin: 20px">
-        <button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 18px; font-weight: bold">Add user</button>
+        <button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 18px; font-weight: bold">
+            <a href="{{ path('user_create') }}" style="color: grey; text-decoration: none">Add user</a>
+        </button>
     </div>
 {% endblock %}

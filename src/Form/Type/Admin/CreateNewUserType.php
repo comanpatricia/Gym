@@ -5,11 +5,12 @@ namespace App\Form\Type\Admin;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class UpdateUserType extends AbstractType
+class CreateNewUserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -18,6 +19,8 @@ class UpdateUserType extends AbstractType
             ->add('lastName', TextType::class, ['label' => 'Last name'])
             ->add('email', EmailType::class, ['label' => 'Email'])
             ->add('phoneNumber', NumberType::class, ['label' => 'Phone number'])
+            ->add('cnp', NumberType::class, ['label' => 'CNP'])
+            ->add('plainPassword', PasswordType::class, ['label' => 'Password'])
             ->add('Save', SubmitType::class);
     }
 }
