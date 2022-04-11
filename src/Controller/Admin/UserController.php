@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class UserController extends AbstractController
 {
@@ -21,33 +22,52 @@ class UserController extends AbstractController
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
+    private int $defaultPerPage;
+
     public function __construct(
         UserRepository $userRepository,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher,
+        string $defaultPerPage
     ) {
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->defaultPerPage = (int) $defaultPerPage;
     }
 
     /**
      * @Route("admin/users", name="admin_users", methods={"GET"})
      */
-    public function getAllUsers(): Response
+    public function getAllUsers(Request $request): Response
     {
+        $paginate['currentPage'] = $request->query->get('page', 1);
+        $paginate['perPage'] = $request->query->get('perPage', $this->defaultPerPage);
+
+        $result = $this->userRepository->showUsersPaginated($paginate);
+
         $users = $this->userRepository->findAll();
 
-        return $this->render('Admin/allUsers.html.twig', ['users' => $users ]);
+        return $this->render('Admin/allUsers.html.twig', [
+            'users' => $users
+//            [max(10)]
+//            'paginate' => $paginate,
+//            'result' => $result
+        ]);
     }
 
     /**
-     * @Route("admin/user/{id}", name="user_update")
+     * @Route("admin/user/{id}", name="user_update", requirements={"id"="\d+"})
      */
     public function updateUser(Request $request, int $id): Response
     {
-        $user = $this->userRepository->find(['id' => $id]);
+        $user = $this->userRepository->findOneBy(['id' => $id]);
         if (null === $user) {
+            $this->addFlash(
+                'error',
+                'User does not exist!'
+            );
+
             return new Response('User does not exist', Response::HTTP_NOT_FOUND);
         }
 
@@ -68,12 +88,18 @@ class UserController extends AbstractController
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
 
-                return $this->redirectToRoute('admin_users');
+                $this->addFlash(
+                    'success',
+                    'User updated successfully!'
+                );
+
+                return $this->redirectToRoute('admin_users', ['user' => $user]);
             }
         }
 
         return $this->render('Admin/updateUser.html.twig', [
             'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 
@@ -84,11 +110,21 @@ class UserController extends AbstractController
     {
         $userToDelete = $this->userRepository->findOneBy(['id' => $id]);
         if (null === $userToDelete) {
+            $this->addFlash(
+                'error',
+                'User does not exist!'
+            );
+
             return new Response('User does not exist', Response::HTTP_NOT_FOUND);
         }
 
         $this->entityManager->remove($userToDelete);
         $this->entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'User deleted successfully!'
+        );
 
         return $this->redirectToRoute('admin_users');
     }
@@ -115,10 +151,15 @@ class UserController extends AbstractController
             $user->cnp = $cnp;
             $user->setPhoneNumber($phoneNumber);
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));
-//            $user->setRoles($roles);
+            $user->setRoles(array_values($user->getRoles()));
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'User created successfully!'
+            );
 
             return $this->redirectToRoute('admin_users');
         }

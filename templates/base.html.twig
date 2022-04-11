@@ -8,15 +8,28 @@
     <body>
         {% block navbar %}
             <div style="font-weight: bold; padding-bottom: 40px">
-                {% if is_granted('ROLE_USER') %}
+                {% if is_granted('ROLE_ADMIN') %}
                     <a style="float: left; padding: 12px; background-color: #353535; text-decoration: none; color: grey" href="{{ path('admin_dashboard') }}">Home</a>
-                    <a style="float: left; padding: 12px; background-color: #353535; text-decoration: none; color: grey" href="#">My account</a>
+                    <a style="float: left; padding: 12px; background-color: #353535; text-decoration: none; color: grey" href="{{ path('admin_dashboard') }}">My account</a>
                     <a style="float: left; padding: 12px; background-color: #353535; text-decoration: none; color: grey" href="{{ path('admin_programmes') }}">Programmes</a>
                     <a style="float: left; padding: 12px; background-color: #353535; text-decoration: none; color: grey" href="{{ path('admin_users') }}">Users</a>
                     <a style="float: right; padding: 12px; background-color: #353535; text-decoration: none; color: grey" href="{{ path('admin_logout') }}">Logout</a>
                 {% endif %}
             </div>
         {% endblock %}
+
+        {% for message in app.flashes('success') %}
+            <h3 style="color: green; font-weight: bold; text-align: center">
+                {{ message }}
+            </h3>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <h3 style="color: red; font-weight: bold; text-align: center">
+                {{ message }}
+            </h3>
+        {% endfor %}
+
         {% block body %}{% endblock %}
     </body>
 </html>

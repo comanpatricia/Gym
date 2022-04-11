@@ -1,5 +1,16 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    <br>
-{{ form(form) }}
+    <br><br>
+    <div style="border: 1px solid black; width: 50%; padding: 30px; margin-left: 25%">
+        <h3>Update user with <a style="font-weight: bold; color: red">ID {{ user.id }}</a></h3>
+        <a>
+            First name: <a style="font-weight: bold">{{ user.firstName }}</a>,
+            last name: <a style="font-weight: bold">{{ user.lastName }}</a>,
+            email: <a style="font-weight: bold">{{ user.email }}</a>,
+            phone number: <a style="font-weight: bold">{{ user.phoneNumber }}</a>.
+        </a>
+        <div style="padding: 30px">
+            {{ form(form) }}
+        </div>
+    </div>
 {% endblock %}
