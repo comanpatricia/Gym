@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div style="margin-top: 200px; text-align: center">
+        <a style="color: #B0413E; font-size: 50px; font-weight: bold">Oops...</a>
+        <h1> you have no permission to be here</h1>
+
+        <p>
+            We could not find the page you are trying to acces, try access the <a href="{{ path('admin_login') }}" style="text-decoration: none; color: #B0413E; font-weight: bold">dashboard</a> page.
+        </p>
+    </div>
+{% endblock %}
