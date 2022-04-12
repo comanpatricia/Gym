@@ -35,7 +35,7 @@ class ProgrammeRepository extends ServiceEntityRepository
         }
 
         if (null != $sortBy) {
-            $sortDirection = strtoupper($sortDirection);
+            $sortDirection = \strtoupper($sortDirection);
             if (!in_array($sortDirection, ['ASC', 'DESC'])) {
                 throw new InvalidArgumentException('Direction must be ASC or DESC');
             }

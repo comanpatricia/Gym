@@ -110,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
     */
-    private ?DateTime $deletedAt;
+    private ?\DateTime $deletedAt;
 
     public function __construct()
     {

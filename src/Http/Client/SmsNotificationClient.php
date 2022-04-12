@@ -24,7 +24,7 @@ class SmsNotificationClient
             'body' => $content
         ];
 
-        $encodedData = json_encode($data);
+        $encodedData = \json_encode($data);
 
         $this->httpClient->request('POST', '', [
             'headers' => [

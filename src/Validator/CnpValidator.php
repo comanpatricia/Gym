@@ -16,7 +16,7 @@ class CnpValidator extends ConstraintValidator
 
         $constant = "279146358279";
         $sum = 0;
-        $length = strlen($value) - 1;
+        $length = \strlen($value) - 1;
         for ($index = 0; $index < $length; $index++) {
             $valueInt = (int) $value[$index];
             $constantInt = (int) $constant[$index];

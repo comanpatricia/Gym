@@ -90,7 +90,7 @@ class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterf
             $description = $column[1];
             $startTime = date_create_from_format('d.m.Y H:i', $column[2]);
             $endTime = date_create_from_format('d.m.Y H:i', $column[3]);
-            $isOnline = filter_var($column[4], FILTER_VALIDATE_BOOLEAN);
+            $isOnline = \filter_var($column[4], FILTER_VALIDATE_BOOLEAN);
             $maxParticipants = $column[5];
 
             $programme = new Programme();

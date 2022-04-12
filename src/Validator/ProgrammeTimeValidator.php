@@ -15,7 +15,7 @@ class ProgrammeTimeValidator extends ConstraintValidator
         }
 
         $regex = "/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/";
-        $regexResponse = preg_match_all($regex, $value, $matches, PREG_SET_ORDER);
+        $regexResponse = \preg_match_all($regex, $value, $matches, PREG_SET_ORDER);
 
         if ($regexResponse) {
             return;
