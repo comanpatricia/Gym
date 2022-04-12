@@ -121,7 +121,7 @@ class UserController extends AbstractController
         $form = $this->createForm(CreateNewUserType::class, $user)->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
-            $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));
             $user->setRoles(array_values($user->getRoles()));
 
             $this->entityManager->persist($user);
