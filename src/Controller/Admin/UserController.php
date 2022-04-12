@@ -22,18 +22,15 @@ class UserController extends AbstractController
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
-    private int $defaultPerPage;
 
     public function __construct(
         UserRepository $userRepository,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $userPasswordHasher,
-        string $defaultPerPage
+        UserPasswordHasherInterface $userPasswordHasher
     ) {
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
         $this->userPasswordHasher = $userPasswordHasher;
-        $this->defaultPerPage = (int) $defaultPerPage;
     }
 
     /**
@@ -41,23 +38,15 @@ class UserController extends AbstractController
      */
     public function getAllUsers(Request $request): Response
     {
-        $paginate['currentPage'] = $request->query->get('page', 1);
-        $paginate['perPage'] = $request->query->get('perPage', $this->defaultPerPage);
-
-        $result = $this->userRepository->showUsersPaginated($paginate);
-
         $users = $this->userRepository->findAll();
 
         return $this->render('Admin/allUsers.html.twig', [
             'users' => $users
-//            [max(10)]
-//            'paginate' => $paginate,
-//            'result' => $result
         ]);
     }
 
     /**
-     * @Route("admin/user/{id}", name="user_update", requirements={"id"="\d+"})
+     * @Route("admin/user/{id}", name="user_update", methods={"GET", "POST"}, requirements={"id"="\d+"})
      */
     public function updateUser(Request $request, int $id): Response
     {
@@ -67,34 +56,29 @@ class UserController extends AbstractController
                 'error',
                 'User does not exist!'
             );
-
-            return new Response('User does not exist', Response::HTTP_NOT_FOUND);
         }
 
         $form = $this->createForm(UpdateUserType::class)->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $firstName = $form->get('firstName')->getData();
             $lastName = $form->get('lastName')->getData();
             $email = $form->get('email')->getData();
             $phoneNumber = $form->get('phoneNumber')->getData();
 
-            if ($user !== null) {
-                $user->firstName = $firstName;
-                $user->lastName = $lastName;
-                $user->email = $email;
-                $user->setPhoneNumber($phoneNumber);
+            $user->firstName = $firstName;
+            $user->lastName = $lastName;
+            $user->email = $email;
+            $user->setPhoneNumber($phoneNumber);
 
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
-                $this->addFlash(
-                    'success',
-                    'User updated successfully!'
-                );
+            $this->addFlash(
+                'success',
+                'User updated successfully!'
+            );
 
                 return $this->redirectToRoute('admin_users', ['user' => $user]);
-            }
         }
 
         return $this->render('Admin/updateUser.html.twig', [
@@ -114,8 +98,6 @@ class UserController extends AbstractController
                 'error',
                 'User does not exist!'
             );
-
-            return new Response('User does not exist', Response::HTTP_NOT_FOUND);
         }
 
         $this->entityManager->remove($userToDelete);
@@ -130,27 +112,16 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("admin/user/create", name="user_create")
+     * @Route("admin/user/create", name="user_create", methods={"GET", "POST"})
      */
     public function createUser(Request $request): Response
     {
-        $form = $this->createForm(CreateNewUserType::class)->handleRequest($request);
+        $user = new User();
 
+        $form = $this->createForm(CreateNewUserType::class, $user)->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $firstName = $form->get('firstName')->getData();
-            $lastName = $form->get('lastName')->getData();
-            $email = $form->get('email')->getData();
-            $cnp = $form->get('cnp')->getData();
-            $phoneNumber = $form->get('phoneNumber')->getData();
-            $plainPassword = $form->get('plainPassword')->getData();
-
-            $user = new User();
-            $user->firstName = $firstName;
-            $user->lastName = $lastName;
-            $user->email = $email;
-            $user->cnp = $cnp;
-            $user->setPhoneNumber($phoneNumber);
-            $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));
+            $user = $form->getData();
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
             $user->setRoles(array_values($user->getRoles()));
 
             $this->entityManager->persist($user);
