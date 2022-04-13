@@ -8,6 +8,8 @@ services:
             $programmeMinTimeInMinutes: '%env(PROGRAMME_MIN_TIME_IN_MINUTES)%'
             $programmeMaxTimeInMinutes: '%env(PROGRAMME_MAX_TIME_IN_MINUTES)%'
             $defaultPerPage: '%env(DEFAULT_PER_PAGE)%'
+            $apiVersion: '%env(API_VERSION)%'
+
     App\:
         resource: '../src/'
         exclude:
@@ -19,3 +21,7 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: [ "controller.service_arguments" ]
+
+    App\EventListener\CustomResponseHeaderSubscriber:
+        tags:
+            - { name: doctrine.event_listener, event: onKernelResponse }
