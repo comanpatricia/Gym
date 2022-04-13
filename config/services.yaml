@@ -21,7 +21,3 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: [ "controller.service_arguments" ]
-
-    App\EventListener\CustomResponseHeaderSubscriber:
-        tags:
-            - { name: doctrine.event_listener, event: onKernelResponse }

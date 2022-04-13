@@ -24,11 +24,13 @@ class CustomResponseHeaderSubscriber implements EventSubscriberInterface
         if (!$event->isMainRequest()) {
             return;
         }
+
         $request = $event->getRequest()->attributes->get('_route');
 
         if ($request === null || \strpos($request, 'api_') === false) {
             return;
         }
+
         $response = $event->getResponse();
         $response->headers->set('X-Api-Version', $this->apiVersion);
     }
