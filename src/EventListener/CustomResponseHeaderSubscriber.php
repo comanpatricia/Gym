@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -26,7 +26,6 @@ class CustomResponseHeaderSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest()->attributes->get('_route');
-        var_dump($request);
 
         if ($request === null || \strpos($request, 'api_') === false) {
             return;
