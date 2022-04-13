@@ -26,4 +26,16 @@ class ProgrammeController extends AbstractController
 
         return $this->render('Admin/allProgrammes.html.twig', ['allProgrammes' => $allProgrammes ]);
     }
+
+    /**
+     * @Route("admin/days", name="busy_days", methods={"GET"})
+     */
+    public function showBusyProgrammes(): Response
+    {
+        $programmes = $this->programmeRepository->countBusyProgrammes();
+
+        return $this->render('Admin/busyDays.html.twig', [
+            'programmes' => $programmes
+        ]);
+    }
 }

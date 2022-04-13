@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <br><br><br>
+    <div style="border: 1px black;">
+        <h2 style="text-align: center">Those are the most busiest days at the Gym:</h2><br>
+        <table style="width: 60%; margin: auto">
+            <tr>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Day</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Hour</th>
+                <th style="border-bottom: 1px solid grey; padding: 10px">Participants</th>
+            </tr>
+            {% for programme in programmes %}
+                <tr>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.day }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.hour }}</td>
+                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.participants }}</td>
+                </tr>
+            {%endfor%}
+        </table>
+    </div>
+{% endblock %}
