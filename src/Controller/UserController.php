@@ -43,7 +43,7 @@ class UserController implements LoggerAwareInterface
     }
 
     /**
-     * @Route(path="/register", methods={"POST"})
+     * @Route(path="/register", name="api_user_register", methods={"POST"})
      */
     public function register(UserDto $userDto): Response
     {
@@ -76,7 +76,7 @@ class UserController implements LoggerAwareInterface
     }
 
     /**
-     * @Route(path="/{id}", methods="DELETE")
+     * @Route(path="/{id}",  name="api_user_delete", methods="DELETE")
      */
     public function softDeleteUser(int $id): Response
     {
@@ -94,7 +94,7 @@ class UserController implements LoggerAwareInterface
     }
 
     /**
-     * @Route(path="/recover/{email}", methods="POST")
+     * @Route(path="/recover/{email}", name="api_user_recover_account", methods="POST")
      */
     public function recoverAccount(string $email): Response
     {
