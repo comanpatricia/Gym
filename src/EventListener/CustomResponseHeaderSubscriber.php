@@ -26,9 +26,9 @@ class CustomResponseHeaderSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest()->attributes->get('_route');
+        var_dump($request);
 
-        if ($request === null || \strpos('api', $request) === false) {
-            var_dump($request);
+        if ($request === null || \strpos($request, 'api_') === false) {
             return;
         }
 

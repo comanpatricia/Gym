@@ -35,7 +35,7 @@ class ApiSendNewsletterController extends AbstractController implements LoggerAw
     }
 
     /**
-     * @Route(path="api/users/newsletter", methods={"POST"})
+     * @Route(path="api/users/newsletter", name="api_newsletter", methods={"POST"})
      */
     public function sendNewsletterNotification(Request $request): Response
     {
