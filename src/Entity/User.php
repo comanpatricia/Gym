@@ -18,7 +18,7 @@ use App\Validator as MyAssert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=false)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -65,12 +65,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      */
     public string $password = '';
 
     /**
      * @MyAssert\Password
+     * @Assert\NotBlank()
      */
     private ?string $plainPassword = '';
 
@@ -104,6 +104,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=10, options={"fixed" = true})
+     * @Assert\Length(min=10, max=10)
      */
     private ?string $phoneNumber = '';
 
