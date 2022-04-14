@@ -30,7 +30,7 @@ class ProgrammeRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('p')
             ->from('App\Entity\Programme', 'p')
-            ->setFirstResult(($paginate['currentPage'] - 1 ) * $paginate['perPage'])
+            ->setFirstResult(($paginate['currentPage'] - 1) * $paginate['perPage'])
             ->setMaxResults($paginate['perPage']);
 
         foreach ($filters as $key => $value) {
@@ -49,5 +49,33 @@ class ProgrammeRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getResult();
+    }
+
+    public function countBusyProgrammes(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+                SELECT
+                    col.day,
+                    col.hour,
+                    col.participants
+                FROM
+                    ( SELECT
+                            DATE_FORMAT(p.start_time, "%d-%m-%Y") as day,
+                            HOUR(p.start_time) as hour,
+                            COUNT(pc.user_id) as participants,
+                            RANK() OVER (
+                                PARTITION BY DATE_FORMAT(p.start_time, "%d-%m-%Y") ORDER BY COUNT(pc.user_id) DESC
+                                ) as position
+                    FROM programme p
+                             LEFT JOIN programmes_customers pc ON p.id = pc.programme_id
+                    GROUP BY day, hour) AS col
+                WHERE col.position = 1
+                ORDER BY col.participants DESC
+                LIMIT 5
+                ';
+
+        return $conn->prepare($sql)->executeQuery()->fetchAllAssociative();
     }
 }
