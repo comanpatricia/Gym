@@ -47,7 +47,7 @@ class UserController implements LoggerAwareInterface
      */
     public function register(UserDto $userDto): Response
     {
-        $this->logger->info('An user is registered');
+        $this->logger->info('A user is registered');
 
         $user = User::createFromDto($userDto);
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));

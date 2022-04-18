@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller\ArgumentResolver;
+namespace App\Tests\Unit\Controller\ArgumentResolver;
 
 use App\Controller\ArgumentResolver\UserDtoArgumentValueResolver;
 use App\Controller\Dto\UserDto;

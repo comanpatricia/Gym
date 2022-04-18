@@ -2,6 +2,7 @@
 
 namespace App\Http\Client;
 
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -16,6 +17,7 @@ class SmsNotificationClient
 
     /**
      * @throws TransportExceptionInterface
+     * @throws ClientException
      */
     public function sendSmsNotification(string $content, string $phoneNumber): void
     {
