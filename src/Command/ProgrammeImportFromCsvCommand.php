@@ -47,7 +47,7 @@ class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterf
         try {
             $handlerInvalidRow = __DIR__ . '/InvalidRowsReturned.txt';
             $handlerPath = '/home/patricia/Gym/src/Command/Programmes.csv';
-            var_dump($handlerPath);
+
             $handler = \fopen($handlerPath, 'r');
             if (!\file_exists($handlerPath)) {
                 throw new InvalidPathException('The path in not valid.', 0, null, $handlerPath);

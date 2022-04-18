@@ -76,7 +76,6 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
             }
 
             $this->roomRepository->findOne();
-            var_dump($this->roomRepository->findOne());
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();
