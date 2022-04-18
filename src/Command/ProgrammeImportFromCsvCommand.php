@@ -48,11 +48,11 @@ class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterf
             $handlerInvalidRow = __DIR__ . '/InvalidRowsReturned.txt';
             $handlerPath = '/home/patricia/Gym/src/Command/Programmes.csv';
             var_dump($handlerPath);
-            $handler = fopen($handlerPath, 'r');
-            if (!file_exists($handlerPath)) {
+            $handler = \fopen($handlerPath, 'r');
+            if (!\file_exists($handlerPath)) {
                 throw new InvalidPathException('The path in not valid.', 0, null, $handlerPath);
             }
-            if (!file_exists($handlerInvalidRow)) {
+            if (!\file_exists($handlerInvalidRow)) {
                 throw new InvalidPathException('The path in not valid.', 0, null, $handlerInvalidRow);
             }
 
@@ -66,7 +66,7 @@ class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterf
 
             return Command::FAILURE;
         } finally {
-            fclose($handler);
+            \fclose($handler);
             $inputOutput->info('Files closed successfully!');
         }
         $inputOutput->success('Programmes were imported!');
@@ -77,9 +77,9 @@ class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterf
     public function importProgrammesFromCsv($handler): void
     {
         $array = [];
-        fgetcsv($handler);
-        while (($data = fgetcsv($handler, null, '|')) !== false) {
-            if (sizeof($data) < 5) {
+        \fgetcsv($handler);
+        while (($data = \fgetcsv($handler, null, '|')) !== false) {
+            if (\sizeof($data) < 5) {
                 throw new InvalidCsvRowException('There are invalid rows.', 0, null, $data);
             }
             $array[] = $data;
@@ -88,8 +88,8 @@ class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterf
         foreach ($array as $column) {
             $name = $column[0];
             $description = $column[1];
-            $startTime = date_create_from_format('d.m.Y H:i', $column[2]);
-            $endTime = date_create_from_format('d.m.Y H:i', $column[3]);
+            $startTime = \date_create_from_format('d.m.Y H:i', $column[2]);
+            $endTime = \date_create_from_format('d.m.Y H:i', $column[3]);
             $isOnline = \filter_var($column[4], FILTER_VALIDATE_BOOLEAN);
             $maxParticipants = $column[5];
 

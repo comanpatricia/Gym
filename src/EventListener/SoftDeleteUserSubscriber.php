@@ -31,7 +31,7 @@ class SoftDeleteUserSubscriber implements EventSubscriberInterface
         $user = $lifecycleEventArgs->getObject();
         $programmes = $this->programmeRepository->findBy(['trainer' => $user]);
 
-        if (!$user instanceof User || !in_array('ROLE_TRAINER', $user->getRoles(), true)) {
+        if (!$user instanceof User || !\in_array('ROLE_TRAINER', $user->getRoles(), true)) {
             return;
         }
 
