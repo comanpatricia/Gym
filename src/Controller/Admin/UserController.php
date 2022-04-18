@@ -22,14 +22,18 @@ class UserController extends AbstractController
 
     private UserPasswordHasherInterface $userPasswordHasher;
 
+    private int $defaultPerPage;
+
     public function __construct(
         UserRepository $userRepository,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher,
+        string $defaultPerPage
     ) {
         $this->userRepository = $userRepository;
         $this->entityManager = $entityManager;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->defaultPerPage = (int) $defaultPerPage;
     }
 
     /**
@@ -37,10 +41,21 @@ class UserController extends AbstractController
      */
     public function getAllUsers(Request $request): Response
     {
-        $users = $this->userRepository->findAll();
+        $currentPage = (int) $request->query->get('page', 1);
+        $perPage = $request->query->get('perPage', $this->defaultPerPage);
+
+        $numberOfUsers = $this->userRepository->countAllUsers();
+        $noPages = (int)( $numberOfUsers / $perPage);
+        if ($numberOfUsers % $perPage !== 0) {
+            $noPages++;
+        }
+        $result = $this->userRepository->showUsersPerPage($currentPage, $perPage);
 
         return $this->render('Admin/allUsers.html.twig', [
-            'users' => $users
+            'users' => $result,
+            'currentPage' => $currentPage,
+            'perPage' => $perPage,
+            'noPages' => $noPages,
         ]);
     }
 
