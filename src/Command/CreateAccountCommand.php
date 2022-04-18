@@ -57,10 +57,9 @@ class CreateAccountCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $helper = $this->getHelper('question');
         $question = new Question('Enter the password');
         $question->setHidden(true);
-        $this->plainPassword = $helper->ask($input, $output, $question);
+        $this->plainPassword = $this->getHelper('question')->ask($input, $output, $question);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

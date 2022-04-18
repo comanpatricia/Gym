@@ -76,6 +76,7 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
             }
 
             $this->roomRepository->findOne();
+            var_dump($this->roomRepository->findOne());
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();
@@ -91,8 +92,7 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
         $response = $this->client->request('GET', 'https://evozon-internship-data-wh.herokuapp.com/api/sport-programs');
         $content = $response->getContent();
         $content = $response->toArray();
-        $data = $content['data'];
 
-        return $data;
+        return $content['data'];
     }
 }
