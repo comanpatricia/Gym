@@ -50,7 +50,6 @@ class UserController implements LoggerAwareInterface
         $this->logger->info('An user is registered');
 
         $user = User::createFromDto($userDto);
-
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));
 
         $errors = $this->validator->validate($user);

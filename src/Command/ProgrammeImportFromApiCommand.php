@@ -92,6 +92,7 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
         $content = $response->getContent();
         $content = $response->toArray();
         $data = $content['data'];
+
         return $data;
     }
 }
