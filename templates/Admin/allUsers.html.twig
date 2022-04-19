@@ -45,4 +45,13 @@
             <a href="{{ path('user_create') }}" style="color: grey; text-decoration: none">Add user</a>
         </button>
     </div>
+
+    <div style="text-align: center; margin: 20px">
+        <button {% if currentPage == 1 %} style="display: none" {% endif %} style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 18px; font-weight: bold">
+            <a href="http://internship.local/admin/users?page={{currentPage - 1}}" style="color: grey; text-decoration: none">Previous page</a>
+        </button>
+        <button {% if currentPage == noPages %} style="display: none" {% endif %} style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 18px; font-weight: bold">
+            <a href="http://internship.local/admin/users?page={{currentPage + 1}}" style="color: grey; text-decoration: none">Next page</a>
+        </button>
+    </div>
 {% endblock %}

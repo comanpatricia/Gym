@@ -71,4 +71,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->findOneBy(['tokenReset' => $tokenReset]);
     }
+
+    public function showUsersPerPage(int $currentPage, int $perPage): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->from('App\Entity\User', 'u')
+            ->setFirstResult(($currentPage - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countAllUsers(): int
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('COUNT(u.id)')
+            ->from('App\Entity\User', 'u')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

@@ -103,10 +103,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTime $tokenResetCreatedAt;
 
     /**
-     * @ORM\Column(type="string", length=10, options={"fixed" = true})
+     * @ORM\Column(type="string", length=10, options={"fixed" = true}, nullable=true)
      * @Assert\Length(min=10, max=10)
      */
-    private ?string $phoneNumber = '';
+    private ?string $phoneNumber = null;
 
     /**
     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
