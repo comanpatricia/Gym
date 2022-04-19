@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\EventSubscriber\JsonResponseContentSubscriber;
-use App\EventSubscriber\XmlResponseContentSubscriber;
 use App\Repository\ProgrammeRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,10 +24,6 @@ class ProgrammeController implements LoggerAwareInterface
 
     private int $defaultPerPage;
 
-//    private JsonResponseContentSubscriber $jsonResponseContentSubscriber;
-//
-//    private XmlResponseContentSubscriber $xmlResponseContentSubscriber;
-
     public function __construct(
         ProgrammeRepository $programmeRepository,
         SerializerInterface $serializer,
@@ -46,11 +39,6 @@ class ProgrammeController implements LoggerAwareInterface
      */
     public function listFilteredProgrammes(Request $request): Response
     {
-        $acceptXMLHeader = AcceptHeader::fromString($request->headers->get('Accept'));
-        if (!$acceptXMLHeader->has('application/xml')) {
-            return new Response("Header not accepted", Response::HTTP_BAD_REQUEST);
-        }
-
         $this->logger->info('List programmes.');
 
         $paginate['currentPage'] = $request->query->get('page', 1);
@@ -69,16 +57,8 @@ class ProgrammeController implements LoggerAwareInterface
             $sortDirection
         );
 
-        if ($acceptXMLHeader->has('application/xml')) {
-            $xml = $this->serializer->serialize(
-                $result,
-                'xml',
-                ['groups' => 'api:programme:all']
-            );
+        $programmes = $this->serializer->serialize($result, 'json', ['groups' => 'api:programme:all']);
 
-            return new Response($xml, Response::HTTP_OK, ['Content-Type' => 'application/xml']);
-        }
-
-        return new Response('BAD REQUEST', Response::HTTP_BAD_REQUEST);
+        return new JsonResponse($programmes, Response::HTTP_OK, [], true);
     }
 }
