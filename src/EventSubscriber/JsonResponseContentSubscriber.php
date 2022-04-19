@@ -32,10 +32,12 @@ class JsonResponseContentSubscriber implements EventSubscriberInterface
             $event->setResponse(new JsonResponse(
                 $json = $this->serializer->serialize(
                     $event,
-                    'xml',
+                    'json',
                     ['groups' => 'api:programme:all']
                 ),
-                Response::HTTP_OK, ['Content-Type' => 'application/xml'], true
+                Response::HTTP_OK,
+                ['Content-Type' => 'application/json'],
+                true
             ));
         }
     }

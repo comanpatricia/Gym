@@ -35,7 +35,8 @@ class XmlResponseContentSubscriber implements EventSubscriberInterface
                     'xml',
                     ['groups' => 'api:programme:all']
                 ),
-                Response::HTTP_OK, ['Content-Type' => 'application/xml']
+                Response::HTTP_OK,
+                ['Content-Type' => 'application/xml'],
             ));
         }
     }
