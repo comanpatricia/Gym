@@ -15,7 +15,7 @@ class PasswordValidator extends ConstraintValidator
         }
 
         $regex = "/^[0-9a-zA-Z]{8,}$/";
-        $regexResponse = preg_match_all($regex, $value, $matches, PREG_SET_ORDER, 0);
+        $regexResponse = \preg_match_all($regex, $value, $matches, PREG_SET_ORDER, 0);
 
         if ($regexResponse) {
             return;

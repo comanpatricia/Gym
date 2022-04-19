@@ -56,7 +56,7 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
             $description = CaesarCipher::decipher($row['description'], 8);
             $startTime = \DateTime::createFromFormat('d.m.Y H:i', $row['startDate']);
             $endTime = \DateTime::createFromFormat('d.m.Y H:i', $row['endDate']);
-            $isOnline = filter_var($row['isOnline'], FILTER_VALIDATE_BOOLEAN);
+            $isOnline = \filter_var($row['isOnline'], FILTER_VALIDATE_BOOLEAN);
             $maxParticipants = (int) $row['maxParticipants'];
 
             $programme = new Programme();
@@ -76,7 +76,6 @@ class ProgrammeImportFromApiCommand extends Command implements LoggerAwareInterf
             }
 
             $this->roomRepository->findOne();
-            var_dump($this->roomRepository->findOne());
 
             $this->entityManager->persist($programme);
             $this->entityManager->flush();
