@@ -27,15 +27,16 @@ class ProgrammeControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $decodedContent = json_decode($client->getResponse()->getContent(), true);
+        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
         $token = $decodedContent['token'];
 
         $client->jsonRequest(
             'POST',
-            'http://internship-project.local/api/programmes/attend?id=' . $programme->getId(),
+            'http://internship.local/api/programmes/attend?id=' . $programme->getId(),
             [],
             [
                 'HTTP_X-AUTH-TOKEN' => $token,
+                'HTTP_ACCEPT' => 'application/json',
             ]
         );
 
@@ -57,16 +58,17 @@ class ProgrammeControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $decodedContent = json_decode($client->getResponse()->getContent(), true);
+        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
         $token = $decodedContent['token'];
 
         $client->getRequest()->query->set('id', null);
         $client->jsonRequest(
             'POST',
-            'http://internship-project.local/api/programmes/attend?id=null',
+            'http://internship.local/api/programmes/attend?id=null',
             [],
             [
                 'HTTP_X-AUTH-TOKEN' => $token,
+                'HTTP_ACCEPT' => 'application/json',
             ]
         );
 
@@ -88,7 +90,7 @@ class ProgrammeControllerTest extends WebTestCase
 //
 //        $this->assertResponseIsSuccessful();
 //
-//        $decodedContent = json_decode($client->getResponse()->getContent(), true);
+//        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
 //        $token = $decodedContent['token'];
 //
 //        $client->jsonRequest(
@@ -116,7 +118,7 @@ class ProgrammeControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $decodedContent = json_decode($client->getResponse()->getContent(), true);
+        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
         $token = $decodedContent['token'];
 
         $client->request('GET', 'http://internship.local/api/programmes', [], [], [

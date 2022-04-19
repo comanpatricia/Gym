@@ -31,5 +31,19 @@ class UserFixture extends Fixture
 
         $manager->persist($user);
         $manager->flush();
+
+        $user2 = new User();
+        $user2->setPlainPassword('Patricia');
+        $user2->setPassword($this->passwordHasher->hashPassword($user2, $user2->getPlainPassword()));
+        $user2->email = 'patri@example.com';
+        $user2->setRoles(["ROLE_USER"]);
+        $user2->firstName = 'Patri';
+        $user2->lastName = 'Coman';
+        $user2->cnp = '2830420457539';
+        $user2->setPhoneNumber('0753479397');
+        $user2->setDeletedAt(null);
+
+        $manager->persist($user2);
+        $manager->flush();
     }
 }

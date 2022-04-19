@@ -99,7 +99,6 @@ class ProgrammeController implements LoggerAwareInterface
         }
 
         $programmeToAttend->addCustomer($user);
-        $this->entityManager->persist($programmeToAttend);
         $this->entityManager->flush();
 
         return new Response('User attended successfully', Response::HTTP_OK);
