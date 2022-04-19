@@ -13,7 +13,7 @@ class CaesarCipher
         if (!\ctype_alpha($cipher)) {
             return $cipher;
         }
-        $offset = \ord(\ctype_upper($cipher) ? 'A' : 'a');
+        $offset = ord(ctype_upper($cipher) ? 'A' : 'a');
 
         return \chr(\fmod(((\ord($cipher) + $key) - $offset), 26) + $offset);
     }

@@ -57,7 +57,6 @@ class ArgumentResolverTest extends TestCase
         $userDto->cnp = '2990505060019';
         $userDto->password = 'Parola123.';
 
-
         self::assertEquals($userDto, $dto);
     }
 }
