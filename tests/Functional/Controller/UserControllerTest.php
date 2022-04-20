@@ -2,6 +2,8 @@
 
 namespace App\Tests\Functional\Controller;
 
+use App\DataFixtures\UserFixture;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -10,6 +12,49 @@ class UserControllerTest extends WebTestCase
     protected function runTest(): void
     {
         $this->markTestSkipped('Skipped test');
+    }
+
+//    private $user;
+
+    public function setUp(): void
+    {
+////        echo 'salut'; //todo pt setup la fiecare test
+//
+//        parent::setUp();
+//        $this->user = new User();
+
+
+//        $client = static::createClient();
+//        $container = $client->getContainer();
+//        $doctrine = $container->get('doctrine');
+//        $entityManager = $doctrine->getManager();
+//
+//        $fixture = new UserFixture();
+//        $fixture->load($entityManager);
+
+
+        parent::setUp();
+        $this->client = static::createClient();
+
+        $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+//        $client = static::createClient();
+//        $user = static::getContainer()->get(UserRepository::class)->findOneBy(['email' => 'patri@example.com']);
+
+        $this->entityManager->beginTransaction();
+
+        $this->entityManager->getConnection()->setAutoCommit(false);
+    }
+
+    public function tearDown(): void
+    {
+//        parent::tearDown();
+//        $fixture = new UserFixture();
+
+        parent::tearDown();
+        $this->entityManager->rollback();
+        $this->entityManager->close();
+        $this->entityManager = null; //avoid memory leaks
     }
 
     public function testSoftDeleteUser(): void
@@ -69,39 +114,40 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404, 'User not found');
     }
 
-    public function testRecoverAccount(): void
-    {
-        $email = 'patricia@example.com';
-        $password = 'Patricia';
-
-        $client = static::createClient();
-        $user = static::getContainer()->get(UserRepository::class)->findOneBy(['email' => 'patri@example.com']);
-
-        $client->jsonRequest('POST', 'http://internship.local/api/login', [
-            'email' => $email,
-            'password' => $password,
-        ]);
-
-        $this->assertResponseIsSuccessful();
-
-        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
-        $token = $decodedContent['token'];
-        $accountToRecover = $decodedContent['user'];
-
-        $this->assertEquals($email, $accountToRecover);
-
-        $client->request('DELETE', 'http://internship.local/api/users/' . $user->getId(), [], [], [
-            'HTTP_X-AUTH-TOKEN' => $token,
-            'HTTP_ACCEPT' => 'application/json',
-        ]);
-        $this->assertResponseStatusCodeSame(200, 'User deleted successfully');
-
-        $client->request('POST', 'http://internship.local/api/users/recover/' . $user->email, [], [], [
-            'HTTP_X-AUTH-TOKEN' => $token,
-            'HTTP_ACCEPT' => 'application/json',
-        ]);
-        $this->assertResponseStatusCodeSame(200, 'Account recovered successfully');
-    }
+//    public function testRecoverAccount(): void
+//    {
+//        $email = 'patricia@example.com';
+//        $password = 'Patricia';
+//
+////        $client = static::createClient();
+////        $user = static::getContainer()->get(UserRepository::class)->findOneBy(['email' => 'patri@example.com']);
+//
+//        $this->client->jsonRequest('POST', 'http://internship.local/api/login', [
+//            'email' => $email,
+//            'password' => $password,
+//        ]);
+//
+//        $this->assertResponseIsSuccessful();
+//
+//        $decodedContent = \json_decode($this->client->getResponse()->getContent(), true);
+//        $token = $decodedContent['token'];
+//        $userToDelete = $decodedContent['user'];
+//
+//        $this->assertEquals($email, $userToDelete);
+//
+//        $userToRecover = $this->getContainer()->get(UserRepository::class)->findOneBy(['email' => 'patri@example.com']);
+//        $this->client->request('DELETE', 'http://internship.local/api/users/' . $userToRecover->getId(), [], [], [
+//            'HTTP_X-AUTH-TOKEN' => $token,
+//            'HTTP_ACCEPT' => 'application/json',
+//        ]);
+//        $this->assertResponseStatusCodeSame(200, 'User deleted successfully');
+//
+//        $this->client->request('POST', 'http://internship.local/api/users/recover/' . $user->email, [], [], [
+//            'HTTP_X-AUTH-TOKEN' => $token,
+//            'HTTP_ACCEPT' => 'application/json',
+//        ]);
+//        $this->assertResponseStatusCodeSame(200, 'Account recovered successfully');
+//    }
 
     public function testRecoverNonExistingAccount(): void
     {
