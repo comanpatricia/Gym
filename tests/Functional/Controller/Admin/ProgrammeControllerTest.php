@@ -6,10 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ProgrammeControllerTest extends WebTestCase
 {
-//    protected function runTest(): void
-//    {
-//        $this->markTestSkipped('Skipped test');
-//    }
+    protected function runTest(): void
+    {
+        $this->markTestSkipped('Skipped test');
+    }
 
     public function testGetAllProgrammes(): void
     {

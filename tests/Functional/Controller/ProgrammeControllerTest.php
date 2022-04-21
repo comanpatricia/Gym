@@ -75,35 +75,35 @@ class ProgrammeControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404, 'Programme not found');
     }
 
-//    public function testAttendWithWrongCredentials(): void
-//    {
-//        $email = 'patri@example.com';
-//        $password = 'Patricia';
-//
-//        $client = static::createClient();
-//        $programme = static::getContainer()->get(ProgrammeRepository::class)->findOneBy(['name' => 'Some stuff']);
-//
-//        $client->jsonRequest('POST', 'http://internship.local/api/login', [
-//            'email' => $email,
-//            'password' => $password,
-//        ]);
-//
-//        $this->assertResponseIsSuccessful();
-//
-//        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
-//        $token = $decodedContent['token'];
-//
-//        $client->jsonRequest(
-//            'POST',
-//            'http://internship-project.local/api/programmes/attend?id=' . $programme->getId(),
-//            [],
-//            [
-//                'HTTP_X-AUTH-TOKEN' => $token,
-//            ]
-//        );
-//
-//        $this->assertResponseStatusCodeSame(401, 'Programme not found');
-//    }
+    public function testAttendWithWrongCredentials(): void
+    {
+        $email = 'patri@example.com';
+        $password = 'Patricia';
+
+        $client = static::createClient();
+        $programme = static::getContainer()->get(ProgrammeRepository::class)->findOneBy(['name' => 'Some stuff']);
+
+        $client->jsonRequest('POST', 'http://internship.local/api/login', [
+            'email' => $email,
+            'password' => $password,
+        ]);
+
+        $this->assertResponseIsSuccessful();
+
+        $decodedContent = \json_decode($client->getResponse()->getContent(), true);
+        $token = $decodedContent['token'];
+
+        $client->jsonRequest(
+            'POST',
+            'http://internship-project.local/api/programmes/attend?id=' . $programme->getId(),
+            [],
+            [
+                'HTTP_X-AUTH-TOKEN' => $token,
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(401, 'Programme not found');
+    }
 
     public function testlistProgrammes(): void
     {

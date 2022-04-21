@@ -9,18 +9,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixture extends Fixture
 {
-//    private UserPasswordHasherInterface $passwordHasher;
-//
-//    public function __construct(UserPasswordHasherInterface $passwordHasher)
-//    {
-//        $this->passwordHasher = $passwordHasher;
-//    }
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
 
     public function load(ObjectManager $manager): void
     {
         $user = new User();
-//        $user->setPlainPassword('Patricia');
-//        $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPlainPassword()));
+        $user->setPlainPassword('Patricia');
+        $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPlainPassword()));
         $user->email = 'patricia@example.com';
         $user->setRoles(["ROLE_USER"]);
         $user->firstName = 'Patri';
@@ -33,8 +33,8 @@ class UserFixture extends Fixture
         $manager->flush();
 
         $user2 = new User();
-//        $user2->setPlainPassword('Patricia');
-//        $user2->setPassword($this->passwordHasher->hashPassword($user2, $user2->getPlainPassword()));
+        $user2->setPlainPassword('Patricia');
+        $user2->setPassword($this->passwordHasher->hashPassword($user2, $user2->getPlainPassword()));
         $user2->email = 'patri@example.com';
         $user2->setRoles(["ROLE_USER"]);
         $user2->firstName = 'Patri';
