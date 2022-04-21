@@ -2,14 +2,22 @@
 
 namespace App\EventSubscriber;
 
+use App\Repository\ProgrammeRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
-use Symfony\Component\Serializer\SerializerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class GigelResponseContentSubscriber implements EventSubscriberInterface
 {
+    private ProgrammeRepository $programmeRepository;
+
+    public function __construct(ProgrammeRepository $programmeRepository)
+    {
+        $this->programmeRepository = $programmeRepository;
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -19,9 +27,18 @@ class GigelResponseContentSubscriber implements EventSubscriberInterface
 
     public function encodeGigelResponseData(ViewEvent $event): void
     {
+        $programmeNumber = $this->programmeRepository->findAll();
+
+        $message = array_map(function () {
+                return ['great' => 'hello sunt gigel'];
+        },
+            $programmeNumber);
+
         $accept = $event->getRequest()->headers->get('Accept');
         if ($accept === 'application/gigel') {
-                $event->setResponse(new JsonResponse('hello sunt gigel'));
+            foreach ($programmeNumber as $item) {
+                $event->setResponse(new JsonResponse($message));
+            }
         }
     }
 }
