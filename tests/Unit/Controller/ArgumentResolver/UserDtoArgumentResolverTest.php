@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-class ArgumentResolverTest extends TestCase
+class UserDtoArgumentResolverTest extends TestCase
 {
     private UserDtoArgumentValueResolver $userDtoArgumentValueResolver;
 
