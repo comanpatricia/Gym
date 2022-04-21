@@ -27,16 +27,13 @@ class GigelResponseContentSubscriber implements EventSubscriberInterface
 
     public function encodeGigelResponseData(ViewEvent $event): void
     {
-        $programmeNumber = $this->programmeRepository->findAll();
+        $programmeNumber = $event->getControllerResult();
 
         $accept = $event->getRequest()->headers->get('Accept');
         if ($accept === 'application/gigel') {
-            foreach ($programmeNumber as $item) {
                 $event->setResponse(new JsonResponse(\array_map(function () {
                     return ['hello' => 'sunt gigel'];
-                },
-                    $programmeNumber)));
-            }
+                }, $programmeNumber)));
         }
     }
 }
