@@ -11,4 +11,5 @@ framework:
                     queue_name: sms_queue
         routing:
             App\Message\SmsNotification: sms_async
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: mail_async
             App\Mailer\NewsletterNotification: mail_async
