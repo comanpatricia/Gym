@@ -55,6 +55,5 @@ class UserControllerTest extends WebTestCase
             'HTTP_ACCEPT' => 'application/json',
         ]);
         $this->assertResponseStatusCodeSame(200, 'User deleted successfully');
-
     }
 }
