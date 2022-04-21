@@ -39,7 +39,7 @@ class ApiLoginController extends AbstractController implements LoggerAwareInterf
         $user = $this->getUser();
 
         if (null === $user) {
-            $this->logger->info('Failed login!');
+            $this->logger->info('Failed login.');
 
             return new JsonResponse([
                 'message' => 'Credentials not found.',
