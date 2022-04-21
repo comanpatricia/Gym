@@ -75,7 +75,7 @@ class UserController implements LoggerAwareInterface
     }
 
     /**
-     * @Route(path="/{id}",  name="api_user_delete", methods="DELETE")
+     * @Route(path="/{id}", name="api_user_delete", methods="DELETE")
      */
     public function softDeleteUser(int $id): Response
     {
@@ -89,7 +89,7 @@ class UserController implements LoggerAwareInterface
 
         $this->logger->info('An user was deleted');
 
-        return new Response('User was deleted successfully', Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -102,7 +102,7 @@ class UserController implements LoggerAwareInterface
 
         $accountToRecover = $this->userRepository->findOneBy(['email' => $email]);
         if (null === $accountToRecover) {
-            return new Response('No such account', Response::HTTP_NO_CONTENT);
+            return new Response('No such account', Response::HTTP_NOT_FOUND);
         }
 
         $accountToRecover->setDeletedAt(null);

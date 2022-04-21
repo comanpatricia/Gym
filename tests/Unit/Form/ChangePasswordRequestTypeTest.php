@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Form;
+namespace App\Tests\Unit\Form;
 
 use App\Form\Type\ChangePasswordRequestType;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventListener\Logs;
+namespace App\EventSubscriber\Logs;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;

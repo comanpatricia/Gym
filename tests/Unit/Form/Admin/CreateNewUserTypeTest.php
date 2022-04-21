@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Tests\Form\Admin;
+namespace App\Tests\Unit\Form\Admin;
 
 use App\Form\Type\Admin\UpdateUserType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class UpdateUserTypeTest extends TestCase
+class CreateNewUserTypeTest extends TestCase
 {
     private UpdateUserType $updateUserType;
 
@@ -40,6 +41,14 @@ class UpdateUserTypeTest extends TestCase
                 [
                     'phoneNumber',
                     NumberType::class
+                ],
+                [
+                    'cnp',
+                    NumberType::class
+                ],
+                [
+                    'plainPassword',
+                    PasswordType::class
                 ],
                 [
                     'save',
