@@ -39,6 +39,8 @@ class ApiSendNewsletterController extends AbstractController implements LoggerAw
      */
     public function sendNewsletterNotification(Request $request): Response
     {
+        $this->logger->info('Newsletter send to all users');
+
         $userToSend = $this->userRepository->findAll();
 
         foreach ($userToSend as $user) {
