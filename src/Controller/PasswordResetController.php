@@ -2,16 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\Type\ChangePasswordRequestType;
 use App\Form\Type\PasswordResetRequestType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -20,8 +22,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Uid\Uuid;
 
-class PasswordResetController extends AbstractController
+class PasswordResetController extends AbstractController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     private EntityManagerInterface $entityManager;
 
     private MailerInterface $mailer;
@@ -48,6 +52,7 @@ class PasswordResetController extends AbstractController
 
     /**
      * @Route(path="/reset/password", name="reset_password")
+     * @throws TransportExceptionInterface
      */
     public function sendEmail(Request $request): Response
     {
@@ -79,6 +84,8 @@ class PasswordResetController extends AbstractController
                     ->htmlTemplate('email.html.twig');
 
                 $this->mailer->send($emailUser);
+
+                $this->logger->info('An email was sent');
             }
 
             return $this->render('signup.html.twig', [
@@ -86,7 +93,7 @@ class PasswordResetController extends AbstractController
             ]);
         }
 
-        return $this->render('resetPassword.html.twig', [
+        return $this->render('sendMail.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -107,6 +114,8 @@ class PasswordResetController extends AbstractController
             $newPassword = $form->get('newPassword')->getData();
 
             $this->userRepository->upgradePassword($user, $this->userPasswordHasher->hashPassword($user, $newPassword));
+
+            $this->logger->info('A password was changed');
 
             return $this->render('success.html.twig', [
                 'form' => $form->createView(),

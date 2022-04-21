@@ -19,7 +19,7 @@ class CreateNewUserType extends AbstractType
             ->add('email', EmailType::class, ['label' => 'Email'])
             ->add('phoneNumber', TextType::class, ['label' => 'Phone number'])
             ->add('cnp', TextType::class, ['label' => 'CNP'])
-            ->add('plainPassword', TextType::class, ['label' => 'Password'])
+            ->add('plainPassword', PasswordType::class, ['label' => 'Password'])
             ->add('Save', SubmitType::class);
     }
 }
