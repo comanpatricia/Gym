@@ -10,6 +10,7 @@ use Psr\Log\LoggerAwareTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -35,6 +36,7 @@ class ApiSendNewsletterController extends AbstractController implements LoggerAw
 
     /**
      * @Route(path="api/user/newsletter", name="api_newsletter", methods={"POST"})
+     * @throws TransportExceptionInterface
      */
     public function sendNewsletterNotification(Request $request): Response
     {
