@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\Type\ChangePasswordRequestType;
 use App\Form\Type\PasswordResetRequestType;
 use App\Repository\UserRepository;
@@ -14,6 +13,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -52,6 +52,7 @@ class PasswordResetController extends AbstractController implements LoggerAwareI
 
     /**
      * @Route(path="/reset/password", name="reset_password")
+     * @throws TransportExceptionInterface
      */
     public function sendEmail(Request $request): Response
     {
@@ -92,7 +93,7 @@ class PasswordResetController extends AbstractController implements LoggerAwareI
             ]);
         }
 
-        return $this->render('resetPassword.html.twig', [
+        return $this->render('sendMail.html.twig', [
             'form' => $form->createView(),
         ]);
     }

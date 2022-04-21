@@ -16,7 +16,7 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route(path="/api/users")
+ * @Route(path="/api/user")
  */
 class UserController implements LoggerAwareInterface
 {
@@ -89,11 +89,11 @@ class UserController implements LoggerAwareInterface
 
         $this->logger->info('An user was deleted');
 
-        return new Response('User was deleted successfully', Response::HTTP_OK);
+        return new Response('User was deleted successfully', Response::HTTP_NO_CONTENT);
     }
 
     /**
-     * @Route(path="/recover/{email}", name="api_user_recover_account", methods="POST")
+     * @Route(path="/recover/{email}", name="api_user_recover_account", methods="PUT")
      */
     public function recoverAccount(string $email): Response
     {
@@ -102,7 +102,7 @@ class UserController implements LoggerAwareInterface
 
         $accountToRecover = $this->userRepository->findOneBy(['email' => $email]);
         if (null === $accountToRecover) {
-            return new Response('No such account', Response::HTTP_NOT_FOUND);
+            return new Response('No such account', Response::HTTP_NO_CONTENT);
         }
 
         $accountToRecover->setDeletedAt(null);

@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\User;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
