@@ -29,15 +29,13 @@ class GigelResponseContentSubscriber implements EventSubscriberInterface
     {
         $programmeNumber = $this->programmeRepository->findAll();
 
-        $message = array_map(function () {
-                return ['great' => 'hello sunt gigel'];
-        },
-            $programmeNumber);
-
         $accept = $event->getRequest()->headers->get('Accept');
         if ($accept === 'application/gigel') {
             foreach ($programmeNumber as $item) {
-                $event->setResponse(new JsonResponse($message));
+                $event->setResponse(new JsonResponse(\array_map(function () {
+                    return ['hello' => 'sunt gigel'];
+                },
+                    $programmeNumber)));
             }
         }
     }
