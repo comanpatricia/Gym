@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * @Route(path="/api/programmes", name="api_programmes")
+ * @Route(path="/api/programme", name="api_programme")
  */
 class ProgrammeController implements LoggerAwareInterface
 {

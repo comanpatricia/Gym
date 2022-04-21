@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Programme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 
@@ -51,6 +52,9 @@ class ProgrammeRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * @throws Exception
+     */
     public function countBusyProgrammes(): array
     {
         $conn = $this->getEntityManager()->getConnection();

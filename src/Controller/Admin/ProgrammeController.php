@@ -18,20 +18,24 @@ class ProgrammeController extends AbstractController
     }
 
     /**
-     * @Route("admin/programmes", name="admin_programmes", methods={"GET"})
+     * @Route("admin/programme", name="admin_programme", methods={"GET"})
      */
     public function getAllProgrammes(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $allProgrammes = $this->programmeRepository->findAll();
 
         return $this->render('Admin/allProgrammes.html.twig', ['allProgrammes' => $allProgrammes ]);
     }
 
     /**
-     * @Route("admin/days", name="busy_days", methods={"GET"})
+     * @Route("admin/day", name="busy_day", methods={"GET"})
      */
     public function showBusyProgrammes(): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $programmes = $this->programmeRepository->countBusyProgrammes();
 
         return $this->render('Admin/busyDays.html.twig', [

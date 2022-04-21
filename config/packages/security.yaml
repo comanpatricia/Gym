@@ -48,11 +48,10 @@ security:
                     - App\Security\TokenAuthenticator
 
     access_control:
-     - { path: ^api/users/newsletter, roles: ROLE_ADMIN }
+     - { path: ^api/user/newsletter, roles: ROLE_ADMIN }
      - { path: ^/api/login, roles: PUBLIC_ACCESS }
-     - { path: ^/api/users/register, roles: PUBLIC_ACCESS }
-     - { path: ^api/users, roles: ROLE_ADMIN }
+     - { path: ^/api/user/register, roles: PUBLIC_ACCESS }
+     - { path: ^api/user, roles: ROLE_ADMIN }
      - { path: ^admin/login, roles: PUBLIC_ACCESS }
      - { path: ^admin, roles: ROLE_ADMIN }
-     - { path: ^api/trainer, roles: ROLE_TRAINER }
      - { path: ^/reset/password }

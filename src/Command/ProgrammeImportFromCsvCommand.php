@@ -2,16 +2,16 @@
 
 namespace App\Command;
 
-use App\Command\Exceptions\InvalidCsvRowException;
-use App\Command\Exceptions\InvalidPathException;
 use App\Entity\Programme;
+use App\Exceptions\InvalidCsvRowException;
+use App\Exceptions\InvalidPathException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Psr\Log\LoggerAwareTrait;
 
 class ProgrammeImportFromCsvCommand extends Command implements LoggerAwareInterface
 {

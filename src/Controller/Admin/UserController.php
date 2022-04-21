@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class UserController extends AbstractController
 {
@@ -37,10 +36,12 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("admin/users", name="admin_users", methods={"GET"})
+     * @Route("admin/user", name="admin_user", methods={"GET"})
      */
     public function getAllUsers(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $currentPage = (int) $request->query->get('page', 1);
         $perPage = $request->query->get('perPage', $this->defaultPerPage);
 
@@ -64,6 +65,8 @@ class UserController extends AbstractController
      */
     public function updateUser(Request $request, int $id): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $user = $this->userRepository->findOneBy(['id' => $id]);
         if (null === $user) {
             $this->addFlash(
@@ -106,6 +109,8 @@ class UserController extends AbstractController
      */
     public function softDeleteAnUser(int $id): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $userToDelete = $this->userRepository->findOneBy(['id' => $id]);
         if (null === $userToDelete) {
             $this->addFlash(
@@ -130,6 +135,8 @@ class UserController extends AbstractController
      */
     public function createUser(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $user = new User();
 
         $form = $this->createForm(CreateNewUserType::class, $user)->handleRequest($request);

@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerAwareInterface;
@@ -22,14 +24,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    private UserPasswordHasherInterface $userPasswordHasher;
-
-    public function __construct(
-        ManagerRegistry $registry,
-        UserPasswordHasherInterface $userPasswordHasher
-    ) {
-        $this->userPasswordHasher = $userPasswordHasher;
-
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, User::class);
     }
 
@@ -60,7 +56,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(\sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
         $user->setPassword($newHashedPassword);
@@ -84,6 +80,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
     public function countAllUsers(): int
     {
         return $this->getEntityManager()

@@ -16,7 +16,7 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route(path="/api/users")
+ * @Route(path="/api/user")
  */
 class UserController implements LoggerAwareInterface
 {

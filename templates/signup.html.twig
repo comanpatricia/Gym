@@ -1,1 +1,9 @@
-<p>If there is a user with this email already registered in our application, an email was sent to this email address</p>
+{% extends "base.html.twig" %}
+{% block body %}
+    <h3 style="text-align: center">If there is a user with this email already registered in our application, an email was sent to this email address &#128525;</h3><br>
+    <h3 style="text-align: center">Be patient & check your
+        <a href="https://mail.google.com" style="color: green; text-decoration: none"> email </a>
+        or go <a href="http://internship.local/reset/password" style="color: blue; text-decoration: none"> back </a>
+        and try again &#128512;
+    </h3><br>
+{% endblock %}
