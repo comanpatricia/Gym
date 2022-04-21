@@ -47,7 +47,7 @@ class ProgrammeController implements LoggerAwareInterface
     /**
      * @Route(methods={"GET"})
      */
-    public function listFilteredProgrammes(Request $request): Response
+    public function listFilteredProgrammes(Request $request): array
     {
         $this->logger->info('List programmes.');
 
@@ -60,20 +60,12 @@ class ProgrammeController implements LoggerAwareInterface
         $sortBy = $request->query->get('sortBy');
         $sortDirection = $request->query->get('sortDirection', 'ASC');
 
-        $result = $this->programmeRepository->findAllFiltered(
+        return $this->programmeRepository->findAllFiltered(
             $paginate,
             $filters,
             $sortBy,
             $sortDirection
         );
-
-        $json = $this->serializer->serialize(
-            $result,
-            'json',
-            ['groups' => 'api:programme:all']
-        );
-
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
 
