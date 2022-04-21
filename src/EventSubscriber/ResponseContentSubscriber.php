@@ -20,7 +20,7 @@ class ResponseContentSubscriber implements EventSubscriberInterface
     {
         $event->setResponse(new JsonResponse(
             'Content type not supported',
-            Response::HTTP_METHOD_NOT_ALLOWED,
+            Response::HTTP_NOT_ACCEPTABLE,
             [],
             true
         ));
