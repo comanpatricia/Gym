@@ -10,13 +10,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class GigelResponseContentSubscriber implements EventSubscriberInterface
 {
-//    private SerializerInterface $serializer;
-//
-//    public function __construct(SerializerInterface $serializer)
-//    {
-//        $this->serializer = $serializer;
-//    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -28,9 +21,7 @@ class GigelResponseContentSubscriber implements EventSubscriberInterface
     {
         $accept = $event->getRequest()->headers->get('Accept');
         if ($accept === 'application/gigel') {
-            if (['groups' => 'api:programme:all']) {
                 $event->setResponse(new JsonResponse('hello sunt gigel'));
-            }
         }
     }
 }
