@@ -23,7 +23,6 @@ class RoomRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    //TODO another complex query
     public function findOne(): ?Room
     {
         return $this->createQueryBuilder('r')

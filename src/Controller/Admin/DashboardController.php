@@ -14,6 +14,8 @@ class DashboardController extends AbstractController
      */
     public function showDashboard(AuthenticationUtils $authenticationUtils): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         return $this->render('Admin/dashboard.html.twig');
     }
 }

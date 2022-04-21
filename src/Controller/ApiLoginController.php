@@ -18,12 +18,9 @@ class ApiLoginController extends AbstractController
 {
     private UserRepository $userRepository;
 
-    private Security $security;
-
-    public function __construct(UserRepository $userRepository, Security $security)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->security = $security;
     }
 
     /**

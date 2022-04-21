@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Exceptions;
+namespace App\Exceptions;
 
 use Throwable;
 
@@ -8,7 +8,7 @@ class InvalidPathException extends \Exception
 {
     private string $filePath;
 
-    public function __construct($message = "", $code = 0, Throwable $previous = null, string $filePath)
+    public function __construct($message = "not found", $code = 0, Throwable $previous = null, string $filePath)
     {
         $this->filePath = $filePath;
 
