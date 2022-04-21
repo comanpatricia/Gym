@@ -7,12 +7,6 @@
                 <th style="border-bottom: 1px solid grey; padding: 10px">Id</th>
                 <th style="border-bottom: 1px solid grey; padding: 10px">Name</th>
                 <th style="border-bottom: 1px solid grey; padding: 10px; inline-size: 800px; overflow-wrap: break-word;">Description</th>
-{#                <th style="border-bottom: 1px solid grey; padding: 10px">Trainer</th>#}
-{#                <th style="border-bottom: 1px solid grey; padding: 10px">Room</th>#}
-{#                <th style="border-bottom: 1px solid grey; padding: 10px">Start</th>#}
-{#                <th style="border-bottom: 1px solid grey; padding: 10px">End</th>#}
-                <th style="border-bottom: 1px solid grey; padding: 10px"></th>
-                <th style="border-bottom: 1px solid grey; padding: 10px"></th>
             </tr>
 
             {% for programme in allProgrammes%}
@@ -20,12 +14,6 @@
                     <td style="border-left: 1px grey solid; padding: 5px">{{ programme.id }}</td>
                     <td style="border-left: 1px grey solid; padding: 5px">{{ programme.name }}</td>
                     <td style="border-left: 1px grey solid; padding: 5px">{{ programme.description }}</td>
-{#                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.trainer.Id }}</td>#}
-{#                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.roomId }}</td>#}
-{#                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.startTime }}</td>#}
-{#                    <td style="border-left: 1px grey solid; padding: 5px">{{ programme.endTime }}</td>#}
-                    <td><button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">Edit</button></td>
-                    <td><button style="color: grey; background-color: #353535; border: #353535; padding: 10px; font-size: 16px; font-weight: bold">Delete</button></td>
                 </tr>
             {% endfor %}
         </table>

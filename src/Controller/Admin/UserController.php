@@ -95,7 +95,7 @@ class UserController extends AbstractController
                 'User updated successfully!'
             );
 
-                return $this->redirectToRoute('admin_users', ['user' => $user]);
+                return $this->redirectToRoute('admin_user', ['user' => $user]);
         }
 
         return $this->render('Admin/updateUser.html.twig', [
@@ -127,7 +127,7 @@ class UserController extends AbstractController
             'User deleted successfully!'
         );
 
-        return $this->redirectToRoute('admin_users');
+        return $this->redirectToRoute('admin_user');
     }
 
     /**
@@ -153,7 +153,7 @@ class UserController extends AbstractController
                 'User created successfully!'
             );
 
-            return $this->redirectToRoute('admin_users');
+            return $this->redirectToRoute('admin_user');
         }
 
         return $this->render('Admin/createNewUser.html.twig', [
