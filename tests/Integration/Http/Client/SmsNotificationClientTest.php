@@ -12,7 +12,7 @@ class SmsNotificationClientTest extends KernelTestCase
     {
         $this->markTestSkipped('Skipped test');
     }
-    
+
     private ?SmsNotificationClient $client;
 
     protected function setUp(): void
