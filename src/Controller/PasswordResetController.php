@@ -7,6 +7,8 @@ use App\Form\Type\PasswordResetRequestType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +22,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Uid\Uuid;
 
-class PasswordResetController extends AbstractController
+class PasswordResetController extends AbstractController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     private EntityManagerInterface $entityManager;
 
     private MailerInterface $mailer;
@@ -80,6 +84,8 @@ class PasswordResetController extends AbstractController
                     ->htmlTemplate('email.html.twig');
 
                 $this->mailer->send($emailUser);
+
+                $this->logger->info('An email was sent');
             }
 
             return $this->render('signup.html.twig', [
@@ -108,6 +114,8 @@ class PasswordResetController extends AbstractController
             $newPassword = $form->get('newPassword')->getData();
 
             $this->userRepository->upgradePassword($user, $this->userPasswordHasher->hashPassword($user, $newPassword));
+
+            $this->logger->info('A password was changed');
 
             return $this->render('success.html.twig', [
                 'form' => $form->createView(),
