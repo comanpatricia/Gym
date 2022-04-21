@@ -25,7 +25,7 @@ class ProgrammeControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->request('GET', 'http://internship.local/admin/programmes');
+        $client->request('GET', 'http://internship.local/admin/programme');
 
         $this->assertResponseIsSuccessful();
     }

@@ -26,7 +26,7 @@ class UserControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->request('GET', 'http://internship.local/admin/users');
+        $client->request('GET', 'http://internship.local/admin/user');
 
         $this->assertResponseIsSuccessful();
     }
@@ -51,7 +51,7 @@ class UserControllerTest extends WebTestCase
 
         $this->assertEquals($email, $userToDelete);
 
-        $client->request('DELETE', 'http://internship.local/api/users/' . $user->getId(), [], [], [
+        $client->request('DELETE', 'http://internship.local/api/user/' . $user->getId(), [], [], [
             'HTTP_ACCEPT' => 'application/json',
         ]);
         $this->assertResponseStatusCodeSame(200, 'User deleted successfully');

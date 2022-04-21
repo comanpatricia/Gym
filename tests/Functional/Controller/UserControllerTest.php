@@ -91,13 +91,13 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals($email, $userToDelete);
 
         $userToRecover = $this->getContainer()->get(UserRepository::class)->findOneBy(['email' => 'patri@example.com']);
-        $client->request('DELETE', 'http://internship.local/api/users/' . $userToRecover->getId(), [], [], [
+        $client->request('DELETE', 'http://internship.local/api/user/' . $userToRecover->getId(), [], [], [
             'HTTP_X-AUTH-TOKEN' => $token,
             'HTTP_ACCEPT' => 'application/json',
         ]);
         $this->assertResponseStatusCodeSame(200, 'User deleted successfully');
 
-        $client->request('POST', 'http://internship.local/api/users/recover/' . $user->email, [], [], [
+        $client->request('POST', 'http://internship.local/api/user/recover/' . $user->email, [], [], [
             'HTTP_X-AUTH-TOKEN' => $token,
             'HTTP_ACCEPT' => 'application/json',
         ]);
