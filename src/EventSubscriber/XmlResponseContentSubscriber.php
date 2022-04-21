@@ -20,7 +20,7 @@ class XmlResponseContentSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ViewEvent::class => 'encodeXmlResponseData'
+            ViewEvent::class => ['encodeXmlResponseData', 10]
         ];
     }
 
@@ -32,7 +32,7 @@ class XmlResponseContentSubscriber implements EventSubscriberInterface
             $event->setResponse(new JsonResponse(
                 $this->serializer->serialize(
                     $event->getControllerResult(),
-                    'xml',
+                    'json',
                     ['groups' => 'api:programme:all']
                 ),
                 Response::HTTP_OK,

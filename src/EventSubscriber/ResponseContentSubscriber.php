@@ -3,33 +3,26 @@
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class ResponseContentSubscriber
-    implements EventSubscriberInterface
+class ResponseContentSubscriber implements EventSubscriberInterface
 {
-    private SerializerInterface $serializer;
-
-    public function __construct(
-        SerializerInterface $serializer
-    ) {
-        $this->serializer = $serializer;
-    }
-
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            ViewEvent::class => [
-                [
-
-                ],
-            ]
+            ViewEvent::class => ['encodeResponseData', -10]
         ];
     }
 
     public function encodeResponseData(ViewEvent $event): void
     {
-
+        $event->setResponse(new JsonResponse(
+            'Content type not supported',
+            Response::HTTP_METHOD_NOT_ALLOWED,
+            [],
+            true
+        ));
     }
 }

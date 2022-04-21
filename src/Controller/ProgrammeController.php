@@ -56,9 +56,5 @@ class ProgrammeController implements LoggerAwareInterface
             $sortBy,
             $sortDirection
         );
-
-//        $programmes = $this->serializer->serialize($result, 'json', ['groups' => 'api:programme:all']);
-
-//        return new JsonResponse($programmes, Response::HTTP_OK, [], true);
     }
 }

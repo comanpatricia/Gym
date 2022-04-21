@@ -20,7 +20,7 @@ class JsonResponseContentSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ViewEvent::class => 'encodeJsonResponseData'
+            ViewEvent::class => ['encodeJsonResponseData', 10]
         ];
     }
 
