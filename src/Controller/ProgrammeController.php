@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\ProgrammeRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,18 +22,26 @@ class ProgrammeController implements LoggerAwareInterface
 
     private ProgrammeRepository $programmeRepository;
 
+    private UserRepository $userRepository;
+
     private SerializerInterface $serializer;
+
+    private EntityManagerInterface $entityManager;
 
     private int $defaultPerPage;
 
     public function __construct(
         ProgrammeRepository $programmeRepository,
+        UserRepository $userRepository,
         SerializerInterface $serializer,
+        EntityManagerInterface $entityManager,
         string $defaultPerPage
     ) {
         $this->programmeRepository = $programmeRepository;
+        $this->userRepository = $userRepository;
         $this->serializer = $serializer;
-        $this->defaultPerPage = (int) $defaultPerPage;
+        $this->entityManager = $entityManager;
+        $this->defaultPerPage = (int)$defaultPerPage;
     }
 
     /**
@@ -64,5 +74,33 @@ class ProgrammeController implements LoggerAwareInterface
         );
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
+    }
+
+
+    /**
+     * @Route(path="/attend", name="api_attend_programme", methods={"POST"})
+     */
+    public function attendAProgramme(Request $request): Response
+    {
+        $this->logger->info('A user attend a programme');
+
+        $programme = $request->query->get('id');
+        $programmeToAttend = $this->programmeRepository->findOneBy(['id' => $programme]);
+
+        if (null === $programmeToAttend) {
+            return new Response('Programme does not exist', Response::HTTP_NOT_FOUND);
+        }
+
+        $token = $request->headers->get('X-AUTH-TOKEN');
+        $user = $this->userRepository->findOneBy(['token' => $token]);
+
+        if (null === $user) {
+            return new Response('User does not exist', Response::HTTP_NOT_FOUND);
+        }
+
+        $programmeToAttend->addCustomer($user);
+        $this->entityManager->flush();
+
+        return new Response('User attended successfully', Response::HTTP_OK);
     }
 }

@@ -82,7 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public string $cnp = '';
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Programme", mappedBy="customers")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Programme", mappedBy="customers")
      */
     private Collection $programmes;
 
